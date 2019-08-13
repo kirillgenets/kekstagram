@@ -37,8 +37,7 @@ var postedPhotos = [];
 
 insertPhotosIntoDocument();
 
-var bigPicture = document.querySelector('.big-picture');
-bigPicture.classList.remove('hidden');
+showBigPicture(0);
 
 /* Функции */
 
@@ -51,8 +50,8 @@ function generateRandomComments() {
 
 		commentsList.push({
 			avatar: 'img/avatar-' + Math.floor(Math.random() * (7 - 1) + 1) + '.svg',
-			message: messagesList[Math.floor(Math.random() * messagesList.length)],
-			name: peopleNames[Math.floor(Math.random() * peopleNames.length)]
+			message: messagesList[Math.floor(Math.random() * messagesList.length)], // Берем рандомный комментарий из массива комментариев
+			name: peopleNames[Math.floor(Math.random() * peopleNames.length)] // Берем рандомное имя из массива имён
 		});
 
 	}
@@ -80,7 +79,9 @@ function insertPhotosIntoDocument() {
 	makePhotosArray();
 
 	var photosList = document.querySelector('.pictures');
-	var photosListFragment = document.createDocumentFragment();
+	var photosListFragment = document.createDocumentFragment(); // Создаем фрагмент для вставки
+
+	// Формирование фрагмента 
 
 	for (var i = 0; i < postedPhotos.length; i++) {
 		var pictureTemplate = document.querySelector('#picture');
@@ -88,15 +89,36 @@ function insertPhotosIntoDocument() {
 		var commentsCount = pictureTemplate.content.querySelector('.picture__comments');
 		var likesCount = pictureTemplate.content.querySelector('.picture__likes');
 
-		picture.setAttribute('src', postedPhotos[i].url);
-		commentsCount.textContent = postedPhotos[i].comments.length;
-		likesCount.textContent = postedPhotos[i].likes;
+		picture.setAttribute('src', postedPhotos[i].url); // Устанавливаем картинку
+		commentsCount.textContent = postedPhotos[i].comments.length; // Устанавливаем количество комментариев
+		likesCount.textContent = postedPhotos[i].likes; // Устанавливаем количество лайков
 
 		var pictureForDocument = document.importNode(pictureTemplate.content, true);
 
-		photosListFragment.appendChild(pictureForDocument);
+		photosListFragment.appendChild(pictureForDocument); // Вставляем фрагмент в документ
 	}
 
 	photosList.appendChild(photosListFragment);
+
+}
+
+function showBigPicture(numberOfPicture) {
+
+	var bigPicture = document.querySelector('.big-picture'); // Показываем большое изображение
+	bigPicture.classList.remove('hidden');
+
+	var bigPictureImg = bigPicture.querySelector('.big-picture__img img'); // Устанавливаем картинку
+	bigPictureImg.setAttribute('src', postedPhotos[numberOfPicture].url);
+
+	var likesCounter = bigPicture.querySelector('.likes-count'); // Устанавливаем количество лайков
+	likesCounter.textContent = postedPhotos[numberOfPicture].likes;
+
+	var commentsCounter = bigPicture.querySelector('.comments-count'); // Устанавливаем количество комментариев
+	commentsCounter.textContent = postedPhotos[numberOfPicture].comments.length;
+
+	// Загрузка комментариев
+
+	var commentsContainer = bigPicture.querySelector('.social__comments');
+	commentsContainer.innerHTML = ''; // Очищаем стандартные комментарии, чтобы добавить новые
 
 }
