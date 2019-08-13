@@ -1,3 +1,5 @@
+'use strict'
+
 var peopleNames = [
 'Абрам', 
 'Август', 
@@ -13,7 +15,13 @@ var peopleNames = [
 'Света',
 'Максим',
 'Дмитрий',
-'Вася'
+'Вася',
+'Валерий',
+'Захар',
+'Витя',
+'Руслан',
+'Евгения',
+'Аня'
 ];
 
 var messagesList = [
@@ -27,33 +35,41 @@ var messagesList = [
 
 var postedPhotos = [];
 
-// Заполняем массив объектами, описывающими фотографии
+makePhotosArray();
 
-for (var i = 0; i < 25; i++) {
+/* Функции */
 
-	postedPhotos.push({
+function makePhotosArray() {
 
-		url: 'photos/' + (i + 1) + '.jpg',
-		likes: Math.floor(Math.random() * (200 - 15) + 15),
-		comments: function() {
+	for (var i = 0; i < 25; i++) {
 
-			var commentsCount = Math.floor(Math.random() * (7 - 1) + 1);
-			var commentsList = [];
+		postedPhotos.push({
 
-			for (var i = 0; i < commentsCount; i++) {
+			url: 'photos/' + (i + 1) + '.jpg',
+			likes: Math.floor(Math.random() * (200 - 15) + 15),
+			comments: generateRandomComments()
 
-				commentsList.push({
-					avatar: 'img/avatar-' + Math.floor(Math.random() * (7 - 1) + 1) + '.svg',
-					message: messagesList[Math.floor(Math.random() * messagesList.length)],
-					name: peopleNames[Math.floor(Math.random() * peopleNames.length)]
-				});
+		});
 
-			}
+	}
 
-			return commentsList;
+}
 
-		}
+function generateRandomComments() {
 
-	});
+	var commentsCount = Math.floor(Math.random() * (7 - 1) + 1);
+	var commentsList = [];
+
+	for (var i = 0; i < commentsCount; i++) {
+
+		commentsList.push({
+			avatar: 'img/avatar-' + Math.floor(Math.random() * (7 - 1) + 1) + '.svg',
+			message: messagesList[Math.floor(Math.random() * messagesList.length)],
+			name: peopleNames[Math.floor(Math.random() * peopleNames.length)]
+		});
+
+	}
+
+	return commentsList;
 
 }
