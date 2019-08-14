@@ -33,30 +33,55 @@ var messagesList = [
 'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'
 ];
 
+var descriptionsList = [
+'Тестим новую камеру! =)',
+'Тестим старую камеру!',
+'Моя новая фотка',
+'Моя старая фотка',
+'Фотка из путешествия',
+'Вам нравится?',
+'Круто же выглядит, правда?'
+];
+
 var postedPhotos = [];
 
 insertPhotosIntoDocument();
 
 showBigPicture(0);
 
+hideDOMElement(document.querySelector('.social__comment-count'));
+hideDOMElement(document.querySelector('.comments-loader'));
+
 /* Функции */
 
 function generateRandomComments() {
 
-	var commentsCount = Math.floor(Math.random() * (7 - 1) + 1);
+	var commentsCount = generateRandomNumber(1, 6);
 	var commentsList = [];
 
 	for (var i = 0; i < commentsCount; i++) {
 
 		commentsList.push({
-			avatar: 'img/avatar-' + Math.floor(Math.random() * (7 - 1) + 1) + '.svg',
-			message: messagesList[Math.floor(Math.random() * messagesList.length)], // Берем рандомный комментарий из массива комментариев
-			name: peopleNames[Math.floor(Math.random() * peopleNames.length)] // Берем рандомное имя из массива имён
+			avatar: 'img/avatar-' + generateRandomNumber(1, 7) + '.svg',
+			message: generateRandomData(messagesList), // Берем рандомный комментарий из массива комментариев
+			name: generateRandomData(peopleNames) // Берем рандомное имя из массива имён
 		});
 
 	}
 
 	return commentsList;
+
+}
+
+function generateRandomData(source) {
+
+	return source[generateRandomNumber(0, source.length)];
+
+}
+
+function generateRandomNumber(min, max) {
+
+	return Math.floor(Math.random() * (max - min) + min)
 
 }
 
@@ -66,7 +91,8 @@ function makePhotosArray() {
 
 		postedPhotos.push({
 			url: 'photos/' + (i + 1) + '.jpg',
-			likes: Math.floor(Math.random() * (200 - 15) + 15),
+			description: generateRandomData(descriptionsList),
+			likes: generateRandomNumber(15, 201),
 			comments: generateRandomComments()
 		});
 
@@ -83,22 +109,30 @@ function insertPhotosIntoDocument() {
 
 	// Формирование фрагмента 
 
-	for (var i = 0; i < postedPhotos.length; i++) {
-		var pictureTemplate = document.querySelector('#picture');
-		var picture = pictureTemplate.content.querySelector('.picture__img');
-		var commentsCount = pictureTemplate.content.querySelector('.picture__comments');
-		var likesCount = pictureTemplate.content.querySelector('.picture__likes');
+	for (var i = 0; i < postedPhotos.length; i++) {		
 
-		picture.setAttribute('src', postedPhotos[i].url); // Устанавливаем картинку
-		commentsCount.textContent = postedPhotos[i].comments.length; // Устанавливаем количество комментариев
-		likesCount.textContent = postedPhotos[i].likes; // Устанавливаем количество лайков
+		var pictureToInsert = document.importNode(createDOMElementFromObject(i).content, true);
 
-		var pictureForDocument = document.importNode(pictureTemplate.content, true);
-
-		photosListFragment.appendChild(pictureForDocument); // Вставляем фрагмент в документ
+		photosListFragment.appendChild(pictureToInsert); // Вставляем фрагмент в документ
+	
 	}
 
 	photosList.appendChild(photosListFragment);
+
+}
+
+function createDOMElementFromObject(numberOfPicture) {
+
+	var pictureTemplate = document.querySelector('#picture');
+	var picture = pictureTemplate.content.querySelector('.picture__img');
+	var commentsCount = pictureTemplate.content.querySelector('.picture__comments');
+	var likesCount = pictureTemplate.content.querySelector('.picture__likes');
+
+	picture.setAttribute('src', postedPhotos[numberOfPicture].url); // Устанавливаем картинку
+	commentsCount.textContent = postedPhotos[numberOfPicture].comments.length; // Устанавливаем количество комментариев
+	likesCount.textContent = postedPhotos[numberOfPicture].likes; // Устанавливаем количество лайков
+
+	return pictureTemplate;
 
 }
 
@@ -109,6 +143,9 @@ function showBigPicture(numberOfPicture) {
 
 	var bigPictureImg = bigPicture.querySelector('.big-picture__img img'); // Устанавливаем картинку
 	bigPictureImg.setAttribute('src', postedPhotos[numberOfPicture].url);
+
+	var bigPictureDescription = bigPicture.querySelector('.social__caption'); // Устанавливаем описание
+	bigPictureDescription.textContent = postedPhotos[numberOfPicture].description;
 
 	var likesCounter = bigPicture.querySelector('.likes-count'); // Устанавливаем количество лайков
 	likesCounter.textContent = postedPhotos[numberOfPicture].likes;
@@ -132,5 +169,17 @@ function showBigPicture(numberOfPicture) {
 		commentHTML += '</p></li>'; // Формируем HTML-код комментария
 		commentsContainer.insertAdjacentHTML('beforeEnd', commentHTML); // Вставка комментария в блок комментариев
 	}
+
+}
+
+function hideDOMElement(element) {
+
+	element.classList.add('visually-hidden');
+
+}
+
+function showDOMElement(element) {
+
+	element.classList.remove('visually-hidden');
 
 }
