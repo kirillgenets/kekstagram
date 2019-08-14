@@ -121,4 +121,16 @@ function showBigPicture(numberOfPicture) {
 	var commentsContainer = bigPicture.querySelector('.social__comments');
 	commentsContainer.innerHTML = ''; // Очищаем стандартные комментарии, чтобы добавить новые
 
+	// Вставка новых комментариев
+
+	for (var i = 0; i < postedPhotos[numberOfPicture].comments.length; i++) {
+		var commentHTML = '';
+		commentHTML += '<li class="social__comment"><img class="social__picture" src="';
+		commentHTML +=  postedPhotos[numberOfPicture].comments[i].avatar;
+		commentHTML += '" alt="Аватар комментатора фотографии" width="35" height="35"><p class="social__text">';
+		commentHTML += postedPhotos[numberOfPicture].comments[i].message;
+		commentHTML += '</p></li>'; // Формируем HTML-код комментария
+		commentsContainer.insertAdjacentHTML('beforeEnd', commentHTML); // Вставка комментария в блок комментариев
+	}
+
 }
