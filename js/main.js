@@ -43,9 +43,18 @@ var descriptionsList = [
   'Круто же выглядит, правда?'
 ];
 
+var pictureTemplate = document.querySelector('#picture');
+var commentsContainer = document.querySelector('.social__comments');
+
+var MAX_COMMENTS_COUNT = 8;
+var MAX_LIKES_COUNT = 201;
+var MIN_LIKES_COUNT = 15;
+var MAX_AVATAR_NUMBER = 7;
+var PHOTOS_COUNT = 25;
+
 var postedPhotos = [];
 
-insertPhotosIntoDocument();
+drawPictures();
 
 showBigPicture(0);
 
@@ -54,15 +63,22 @@ hideDOMElement(document.querySelector('.comments-loader'));
 
 /* Функции */
 
+function drawPictures() {
+
+  makePhotosArray();
+  insertPhotosIntoDocument();
+
+}
+
 function generateRandomComments() {
 
-  var commentsCount = generateRandomNumber(1, 6);
+  var commentsCount = generateRandomNumber(0, MAX_COMMENTS_COUNT);
   var commentsList = [];
 
   for (var i = 0; i < commentsCount; i++) {
 
     commentsList.push({
-      avatar: 'img/avatar-' + generateRandomNumber(1, 7) + '.svg',
+      avatar: 'img/avatar-' + generateRandomNumber(1, MAX_AVATAR_NUMBER) + '.svg',
       message: generateRandomData(messagesList), // Берем рандомный комментарий из массива комментариев
       name: generateRandomData(peopleNames) // Берем рандомное имя из массива имён
     });
@@ -87,12 +103,12 @@ function generateRandomNumber(min, max) {
 
 function makePhotosArray() {
 
-  for (var i = 0; i < 25; i++) {
+  for (var i = 0; i < PHOTOS_COUNT; i++) {
 
     postedPhotos.push({
       url: 'photos/' + (i + 1) + '.jpg',
       description: generateRandomData(descriptionsList),
-      likes: generateRandomNumber(15, 201),
+      likes: generateRandomNumber(MIN_LIKES_COUNT, MAX_LIKES_COUNT),
       comments: generateRandomComments()
     });
 
@@ -101,8 +117,6 @@ function makePhotosArray() {
 }
 
 function insertPhotosIntoDocument() {
-
-  makePhotosArray();
 
   var photosList = document.querySelector('.pictures');
   var photosListFragment = document.createDocumentFragment(); // Создаем фрагмент для вставки
@@ -123,16 +137,16 @@ function insertPhotosIntoDocument() {
 
 function createDOMElementFromObject(numberOfPicture) {
 
-  var pictureTemplate = document.querySelector('#picture');
-  var picture = pictureTemplate.content.querySelector('.picture__img');
-  var commentsCount = pictureTemplate.content.querySelector('.picture__comments');
-  var likesCount = pictureTemplate.content.querySelector('.picture__likes');
+  var pictureTemplateClone = pictureTemplate.cloneNode(true);
+  var picture = pictureTemplateClone.content.querySelector('.picture__img');
+  var commentsCount = pictureTemplateClone.content.querySelector('.picture__comments');
+  var likesCount = pictureTemplateClone.content.querySelector('.picture__likes');
 
-  picture.setAttribute('src', postedPhotos[numberOfPicture].url); // Устанавливаем картинку
+  picture.src = postedPhotos[numberOfPicture].url; // Устанавливаем картинку
   commentsCount.textContent = postedPhotos[numberOfPicture].comments.length; // Устанавливаем количество комментариев
   likesCount.textContent = postedPhotos[numberOfPicture].likes; // Устанавливаем количество лайков
 
-  return pictureTemplate;
+  return pictureTemplateClone;
 
 }
 
@@ -141,33 +155,46 @@ function showBigPicture(numberOfPicture) {
   var bigPicture = document.querySelector('.big-picture'); // Показываем большое изображение
   bigPicture.classList.remove('hidden');
 
-  var bigPictureImg = bigPicture.querySelector('.big-picture__img img'); // Устанавливаем картинку
-  bigPictureImg.setAttribute('src', postedPhotos[numberOfPicture].url);
+  bigPicture.querySelector('.big-picture__img img').src = postedPhotos[numberOfPicture].url;
+  bigPicture.querySelector('.social__caption').textContent = postedPhotos[numberOfPicture].description;
+  bigPicture.querySelector('.likes-count').textContent = postedPhotos[numberOfPicture].likes;
+  bigPicture.querySelector('.comments-count').textContent = postedPhotos[numberOfPicture].comments.length;
 
-  var bigPictureDescription = bigPicture.querySelector('.social__caption'); // Устанавливаем описание
-  bigPictureDescription.textContent = postedPhotos[numberOfPicture].description;
+  commentsContainer.innerHTML = '';
+  showComments(numberOfPicture);
 
-  var likesCounter = bigPicture.querySelector('.likes-count'); // Устанавливаем количество лайков
-  likesCounter.textContent = postedPhotos[numberOfPicture].likes;
+}
 
-  var commentsCounter = bigPicture.querySelector('.comments-count'); // Устанавливаем количество комментариев
-  commentsCounter.textContent = postedPhotos[numberOfPicture].comments.length;
+function createComment(message, avatarSrc) {
 
-  // Загрузка комментариев
+  var comment = document.createElement('li');
+  comment.className = 'social__comment';
 
-  var commentsContainer = bigPicture.querySelector('.social__comments');
-  commentsContainer.innerHTML = ''; // Очищаем стандартные комментарии, чтобы добавить новые
+  var avatarImage = document.createElement('img');
+  avatarImage.className = 'social__picture';
+  avatarImage.src = avatarSrc;
+  avatarImage.alt = 'Аватар комментатора фотографии';
+  avatarImage.width = 35;
+  avatarImage.height = 35;
+  comment.appendChild(avatarImage);
 
-  // Вставка новых комментариев
+  var commentMessage = document.createElement('p');
+  commentMessage.className = 'social__text';
+  commentMessage.textContent = message;
+  comment.appendChild(commentMessage);
+
+  commentsContainer.appendChild(comment); // Вставка комментария в блок комментариев
+
+}
+
+function showComments(numberOfPicture) {
 
   for (var i = 0; i < postedPhotos[numberOfPicture].comments.length; i++) {
-    var commentHTML = '';
-    commentHTML += '<li class="social__comment"><img class="social__picture" src="';
-    commentHTML += postedPhotos[numberOfPicture].comments[i].avatar;
-    commentHTML += '" alt="Аватар комментатора фотографии" width="35" height="35"><p class="social__text">';
-    commentHTML += postedPhotos[numberOfPicture].comments[i].message;
-    commentHTML += '</p></li>'; // Формируем HTML-код комментария
-    commentsContainer.insertAdjacentHTML('beforeEnd', commentHTML); // Вставка комментария в блок комментариев
+
+    if (commentsContainer.children.length < 5) {
+      createComment(postedPhotos[numberOfPicture].comments[i].message, postedPhotos[numberOfPicture].comments[i].avatar);
+    }
+
   }
 
 }
