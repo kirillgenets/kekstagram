@@ -46,6 +46,7 @@ var descriptionsList = [
 var pictureTemplate = document.querySelector('#picture');
 var commentsContainer = document.querySelector('.social__comments');
 
+var MAX_SHOWN_COMMENTS_COUNT = 5;
 var MAX_COMMENTS_COUNT = 8;
 var MAX_LIKES_COUNT = 201;
 var MIN_LIKES_COUNT = 15;
@@ -183,7 +184,7 @@ function createComment(message, avatarSrc) {
   commentMessage.textContent = message;
   comment.appendChild(commentMessage);
 
-  commentsContainer.appendChild(comment); // Вставка комментария в блок комментариев
+  return comment;
 
 }
 
@@ -191,8 +192,8 @@ function showComments(numberOfPicture) {
 
   for (var i = 0; i < postedPhotos[numberOfPicture].comments.length; i++) {
 
-    if (commentsContainer.children.length < 5) {
-      createComment(postedPhotos[numberOfPicture].comments[i].message, postedPhotos[numberOfPicture].comments[i].avatar);
+    if (commentsContainer.children.length < MAX_SHOWN_COMMENTS_COUNT) {
+      commentsContainer.appendChild(createComment(postedPhotos[numberOfPicture].comments[i].message, postedPhotos[numberOfPicture].comments[i].avatar));
     }
 
   }
