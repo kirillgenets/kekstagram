@@ -50,7 +50,6 @@ var descriptionsList = [
   'Круто же выглядит, правда?'
 ];
 
-var pictureTemplate = document.querySelector('#picture');
 var commentsContainer = document.querySelector('.social__comments');
 
 var postedPhotos = [];
@@ -119,6 +118,7 @@ function makePhotosArray() {
 
 function insertPhotosIntoDocument() {
 
+  var pictureTemplate = document.querySelector('#picture');
   var photosList = document.querySelector('.pictures');
   var photosListFragment = document.createDocumentFragment(); // Создаем фрагмент для вставки
 
@@ -126,7 +126,7 @@ function insertPhotosIntoDocument() {
 
   for (var i = 0; i < postedPhotos.length; i++) {
 
-    photosListFragment.appendChild(createDOMElementFromObject(i).content); // Вставляем фрагмент в документ
+    photosListFragment.appendChild(createDOMElementFromObject(pictureTemplate, i).content); // Вставляем фрагмент в документ
 
   }
 
@@ -134,9 +134,9 @@ function insertPhotosIntoDocument() {
 
 }
 
-function createDOMElementFromObject(numberOfPicture) {
+function createDOMElementFromObject(template, numberOfPicture) {
 
-  var pictureTemplateClone = pictureTemplate.cloneNode(true);
+  var pictureTemplateClone = template.cloneNode(true);
 
   pictureTemplateClone.content.querySelector('.picture__img').src = postedPhotos[numberOfPicture].url; // Устанавливаем картинку
   pictureTemplateClone.content.querySelector('.picture__comments').textContent = postedPhotos[numberOfPicture].comments.length; // Устанавливаем количество комментариев
