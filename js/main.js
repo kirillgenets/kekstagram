@@ -126,9 +126,7 @@ function insertPhotosIntoDocument() {
 
   for (var i = 0; i < postedPhotos.length; i++) {
 
-    var pictureToInsert = document.importNode(createDOMElementFromObject(i).content, true);
-
-    photosListFragment.appendChild(pictureToInsert); // Вставляем фрагмент в документ
+    photosListFragment.appendChild(createDOMElementFromObject(i).content); // Вставляем фрагмент в документ
 
   }
 
@@ -139,13 +137,10 @@ function insertPhotosIntoDocument() {
 function createDOMElementFromObject(numberOfPicture) {
 
   var pictureTemplateClone = pictureTemplate.cloneNode(true);
-  var picture = pictureTemplateClone.content.querySelector('.picture__img');
-  var commentsCount = pictureTemplateClone.content.querySelector('.picture__comments');
-  var likesCount = pictureTemplateClone.content.querySelector('.picture__likes');
 
-  picture.src = postedPhotos[numberOfPicture].url; // Устанавливаем картинку
-  commentsCount.textContent = postedPhotos[numberOfPicture].comments.length; // Устанавливаем количество комментариев
-  likesCount.textContent = postedPhotos[numberOfPicture].likes; // Устанавливаем количество лайков
+  pictureTemplateClone.content.querySelector('.picture__img').src = postedPhotos[numberOfPicture].url; // Устанавливаем картинку
+  pictureTemplateClone.content.querySelector('.picture__comments').textContent = postedPhotos[numberOfPicture].comments.length; // Устанавливаем количество комментариев
+  pictureTemplateClone.content.querySelector('.picture__likes').textContent = postedPhotos[numberOfPicture].likes; // Устанавливаем количество лайков
 
   return pictureTemplateClone;
 
