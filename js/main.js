@@ -189,6 +189,8 @@ function showComments(numberOfPicture) {
 
     if (commentsContainer.children.length < MAX_SHOWN_COMMENTS_COUNT) {
       commentsContainer.appendChild(createComment(postedPhotos[numberOfPicture].comments[i].message, postedPhotos[numberOfPicture].comments[i].avatar));
+    } else {
+      break;
     }
 
   }
