@@ -1,11 +1,13 @@
 'use strict';
 
 var MAX_SHOWN_COMMENTS_COUNT = 5;
-var MAX_COMMENTS_COUNT = 8;
+var MAX_COMMENTS_COUNT = 14;
 var MAX_LIKES_COUNT = 201;
 var MIN_LIKES_COUNT = 15;
 var MAX_AVATAR_NUMBER = 7;
 var PHOTOS_COUNT = 25;
+
+var lastShownComment = 0;
 
 var peopleNames = [
   'Абрам',
@@ -126,7 +128,7 @@ function insertPhotosIntoDocument() {
 
   for (var i = 0; i < postedPhotos.length; i++) {
 
-    photosListFragment.appendChild(createDOMElementFromObject(pictureTemplate, i)); // Вставляем фрагмент в документ
+    photosListFragment.appendChild(createPictureFromObject(pictureTemplate, i)); // Вставляем фрагмент в документ
 
   }
 
@@ -134,7 +136,7 @@ function insertPhotosIntoDocument() {
 
 }
 
-function createDOMElementFromObject(template, numberOfPicture) {
+function createPictureFromObject(template, numberOfPicture) {
 
   var pictureTemplateClone = template.cloneNode(true);
 
