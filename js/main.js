@@ -187,8 +187,9 @@ function createComment(message, avatarSrc) {
 function showComments(destination, numberOfPicture) {
 
   var i = 0;
-  while (i < postedPhotos[numberOfPicture].comments.length && i < MAX_SHOWN_COMMENTS_COUNT) {
-    destination.appendChild(createComment(postedPhotos[numberOfPicture].comments[i].message, postedPhotos[numberOfPicture].comments[i].avatar));
+  while (i < postedPhotos[numberOfPicture].comments.length && i < MAX_SHOWN_COMMENTS_COUNT &&  lastShownComment < postedPhotos[numberOfPicture].comments.length) {
+    destination.appendChild(createComment(postedPhotos[numberOfPicture].comments[lastShownComment].message, postedPhotos[numberOfPicture].comments[lastShownComment].avatar));
+    lastShownComment++;
     i++;
   }
 
