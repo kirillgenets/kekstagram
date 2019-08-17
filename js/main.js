@@ -52,8 +52,6 @@ var descriptionsList = [
   'Круто же выглядит, правда?'
 ];
 
-var commentsContainer = document.querySelector('.social__comments');
-
 var postedPhotos = [];
 
 drawPictures();
@@ -150,6 +148,7 @@ function createPictureFromObject(template, numberOfPicture) {
 
 function showBigPicture(numberOfPicture) {
 
+  var commentsContainer = document.querySelector('.social__comments');
   var bigPicture = document.querySelector('.big-picture'); // Показываем большое изображение
   bigPicture.classList.remove('hidden');
 
@@ -159,7 +158,7 @@ function showBigPicture(numberOfPicture) {
   bigPicture.querySelector('.comments-count').textContent = postedPhotos[numberOfPicture].comments.length;
 
   commentsContainer.innerHTML = '';
-  showComments(numberOfPicture);
+  showComments(commentsContainer, numberOfPicture);
 
 }
 
@@ -185,11 +184,11 @@ function createComment(message, avatarSrc) {
 
 }
 
-function showComments(numberOfPicture) {
+function showComments(destination, numberOfPicture) {
 
   var i = 0;
   while (i < postedPhotos[numberOfPicture].comments.length && i < MAX_SHOWN_COMMENTS_COUNT) {
-    commentsContainer.appendChild(createComment(postedPhotos[numberOfPicture].comments[i].message, postedPhotos[numberOfPicture].comments[i].avatar));
+    destination.appendChild(createComment(postedPhotos[numberOfPicture].comments[i].message, postedPhotos[numberOfPicture].comments[i].avatar));
     i++;
   }
 
