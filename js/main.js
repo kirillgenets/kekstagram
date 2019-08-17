@@ -118,7 +118,7 @@ function makePhotosArray() {
 
 function insertPhotosIntoDocument() {
 
-  var pictureTemplate = document.querySelector('#picture');
+  var pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
   var photosList = document.querySelector('.pictures');
   var photosListFragment = document.createDocumentFragment(); // Создаем фрагмент для вставки
 
@@ -126,7 +126,7 @@ function insertPhotosIntoDocument() {
 
   for (var i = 0; i < postedPhotos.length; i++) {
 
-    photosListFragment.appendChild(createDOMElementFromObject(pictureTemplate, i).content); // Вставляем фрагмент в документ
+    photosListFragment.appendChild(createDOMElementFromObject(pictureTemplate, i)); // Вставляем фрагмент в документ
 
   }
 
@@ -138,9 +138,9 @@ function createDOMElementFromObject(template, numberOfPicture) {
 
   var pictureTemplateClone = template.cloneNode(true);
 
-  pictureTemplateClone.content.querySelector('.picture__img').src = postedPhotos[numberOfPicture].url; // Устанавливаем картинку
-  pictureTemplateClone.content.querySelector('.picture__comments').textContent = postedPhotos[numberOfPicture].comments.length; // Устанавливаем количество комментариев
-  pictureTemplateClone.content.querySelector('.picture__likes').textContent = postedPhotos[numberOfPicture].likes; // Устанавливаем количество лайков
+  pictureTemplateClone.querySelector('.picture__img').src = postedPhotos[numberOfPicture].url; // Устанавливаем картинку
+  pictureTemplateClone.querySelector('.picture__comments').textContent = postedPhotos[numberOfPicture].comments.length; // Устанавливаем количество комментариев
+  pictureTemplateClone.querySelector('.picture__likes').textContent = postedPhotos[numberOfPicture].likes; // Устанавливаем количество лайков
 
   return pictureTemplateClone;
 
@@ -185,14 +185,10 @@ function createComment(message, avatarSrc) {
 
 function showComments(numberOfPicture) {
 
-  for (var i = 0; i < postedPhotos[numberOfPicture].comments.length; i++) {
-
-    if (commentsContainer.children.length < MAX_SHOWN_COMMENTS_COUNT) {
-      commentsContainer.appendChild(createComment(postedPhotos[numberOfPicture].comments[i].message, postedPhotos[numberOfPicture].comments[i].avatar));
-    } else {
-      break;
-    }
-
+  var i = 0;
+  while (i < postedPhotos[numberOfPicture].comments.length && i < MAX_SHOWN_COMMENTS_COUNT) {
+    commentsContainer.appendChild(createComment(postedPhotos[numberOfPicture].comments[i].message, postedPhotos[numberOfPicture].comments[i].avatar));
+    i++;
   }
 
 }
