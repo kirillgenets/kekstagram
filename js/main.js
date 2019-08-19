@@ -224,7 +224,7 @@ function hideDOMElement(element) {
 function uploadPicture() {
 
   showImageEditor();
-  closeImageEditor();
+  hideImageEditor();
 
 }
 
@@ -239,7 +239,7 @@ function showImageEditor() {
 
 }
 
-function closeImageEditor() {
+function hideImageEditor() {
 
   document.querySelector('.img-upload__cancel').addEventListener('click', function() {
 
