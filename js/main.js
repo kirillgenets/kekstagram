@@ -138,6 +138,8 @@ function createPicture(template, numberOfPicture) {
 
   var pictureTemplateClone = template.cloneNode(true);
 
+  // Заполнение картинки данными из объекта
+
   pictureTemplateClone.querySelector('.picture__img').src = postedPhotos[numberOfPicture].url; // Устанавливаем картинку
   pictureTemplateClone.querySelector('.picture__comments').textContent = postedPhotos[numberOfPicture].comments.length; // Устанавливаем количество комментариев
   pictureTemplateClone.querySelector('.picture__likes').textContent = postedPhotos[numberOfPicture].likes; // Устанавливаем количество лайков
@@ -149,8 +151,10 @@ function createPicture(template, numberOfPicture) {
 function showBigPicture(numberOfPicture) {
 
   var commentsContainer = document.querySelector('.social__comments');
-  var bigPicture = document.querySelector('.big-picture'); // Показываем большое изображение
-  bigPicture.classList.remove('hidden');
+  var bigPicture = document.querySelector('.big-picture');
+  bigPicture.classList.remove('hidden'); // Показываем большое изображение
+
+  // Заполнение большого изображения нужными данными
 
   bigPicture.querySelector('.big-picture__img img').src = postedPhotos[numberOfPicture].url;
   bigPicture.querySelector('.social__caption').textContent = postedPhotos[numberOfPicture].description;
@@ -164,8 +168,12 @@ function showBigPicture(numberOfPicture) {
 
 function createComment(message, avatarSrc) {
 
+  // Формирование контейнера комментария
+
   var comment = document.createElement('li');
   comment.className = 'social__comment';
+
+  // Формирование аватарки комментария
 
   var avatarImage = document.createElement('img');
   avatarImage.className = 'social__picture';
@@ -174,6 +182,8 @@ function createComment(message, avatarSrc) {
   avatarImage.width = 35;
   avatarImage.height = 35;
   comment.appendChild(avatarImage);
+
+  // Формирование сообщения комментария
 
   var commentMessage = document.createElement('p');
   commentMessage.className = 'social__text';
@@ -186,7 +196,9 @@ function createComment(message, avatarSrc) {
 
 function showComments(destination, numberOfPicture) {
 
-  var commentsFragment = document.createDocumentFragment();
+  var commentsFragment = document.createDocumentFragment(); // Создаем фрагмент для вставки
+
+  // Формирование фрагмента
 
   var i = 0;
   while (i < postedPhotos[numberOfPicture].comments.length && i < MAX_SHOWN_COMMENTS_COUNT &&  lastShownComment < postedPhotos[numberOfPicture].comments.length) {
@@ -195,7 +207,7 @@ function showComments(destination, numberOfPicture) {
     i++;
   }
 
-  destination.appendChild(commentsFragment);
+  destination.appendChild(commentsFragment); // Вставка фрагмента в документ
 
 }
 
