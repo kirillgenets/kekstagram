@@ -201,7 +201,7 @@ function showComments(destination, numberOfPicture) {
   // Формирование фрагмента
 
   var i = 0;
-  while (i < postedPhotos[numberOfPicture].comments.length && i < MAX_SHOWN_COMMENTS_COUNT &&  lastShownComment < postedPhotos[numberOfPicture].comments.length) {
+  while (i < postedPhotos[numberOfPicture].comments.length && i < MAX_SHOWN_COMMENTS_COUNT && lastShownComment < postedPhotos[numberOfPicture].comments.length) {
     commentsFragment.appendChild(createComment(postedPhotos[numberOfPicture].comments[lastShownComment].message, postedPhotos[numberOfPicture].comments[lastShownComment].avatar));
     lastShownComment++;
     i++;
