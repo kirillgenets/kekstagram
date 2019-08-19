@@ -55,13 +55,13 @@ var descriptionsList = [
 var postedPhotos = [];
 
 drawPictures();
+uploadPicture();
 
 // showBigPicture(0);
+// hideDOMElement(document.querySelector('.social__comment-count'));
+// hideDOMElement(document.querySelector('.comments-loader'));
 
-hideDOMElement(document.querySelector('.social__comment-count'));
-hideDOMElement(document.querySelector('.comments-loader'));
-
-/* Функции */
+/* Функции для показа изображений */
 
 function drawPictures() {
 
@@ -148,6 +148,8 @@ function createPicture(template, numberOfPicture) {
 
 }
 
+/* Функции для работы с большим изображением */
+
 function showBigPicture(numberOfPicture) {
 
   var commentsContainer = document.querySelector('.social__comments');
@@ -214,5 +216,37 @@ function showComments(destination, numberOfPicture) {
 function hideDOMElement(element) {
 
   element.classList.add('visually-hidden');
+
+}
+
+/* Функции для редактора изображений */
+
+function uploadPicture() {
+
+  showImageEditor();
+  closeImageEditor();
+
+}
+
+
+function showImageEditor() {
+
+  document.querySelector('#upload-file').addEventListener('change', function() {
+
+    document.querySelector('.img-upload__overlay').classList.remove('hidden');
+
+  });
+
+}
+
+function closeImageEditor() {
+
+  document.querySelector('.img-upload__cancel').addEventListener('click', function() {
+
+    if (! document.querySelector('.img-upload__overlay').classList.contains('hidden')) {
+      document.querySelector('.img-upload__overlay').classList.add('hidden');
+    }
+
+  });
 
 }
