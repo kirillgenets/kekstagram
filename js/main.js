@@ -56,7 +56,7 @@ var postedPhotos = [];
 
 drawPictures();
 
-showBigPicture(0);
+// showBigPicture(0);
 
 hideDOMElement(document.querySelector('.social__comment-count'));
 hideDOMElement(document.querySelector('.comments-loader'));
