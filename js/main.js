@@ -134,7 +134,7 @@ function insertPhotosIntoDocument() {
 
 }
 
-function createPictureFromObject(template, numberOfPicture) {
+function createPicture(template, numberOfPicture) {
 
   var pictureTemplateClone = template.cloneNode(true);
 
