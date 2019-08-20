@@ -172,6 +172,34 @@ function showBigPicture() {
 
   });
 
+  hideBigPicture();
+
+}
+
+function hideBigPicture() {
+
+  // Закрытие окна при клике на крестик
+
+  document.querySelector('.big-picture__cancel').addEventListener('click', function() {
+
+    if (! document.querySelector('.big-picture').classList.contains('hidden')) {
+      document.querySelector('.big-picture').classList.add('hidden');
+      lastShownComment = 0;
+    }
+
+  });
+
+  // Закрытие окна при нажатии ESC
+
+  window.addEventListener('keydown', function(event) {
+
+    if (event.key == 'Escape' && ! document.querySelector('.big-picture').classList.contains('hidden')) {
+      document.querySelector('.big-picture').classList.add('hidden');
+      lastShownComment = 0;
+    }
+
+  });
+
 }
 
 function createBigPicture(numberOfPicture) {
