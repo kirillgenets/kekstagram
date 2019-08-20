@@ -150,6 +150,16 @@ function createPicture(template, numberOfPicture) {
 
 /* Функции для работы с большим изображением */
 
+function getNumberOfChild(child, parent) {
+
+  for (var i = 0; i < parent.length; i++) {
+
+    if (parent[i] == child) return i;
+
+  }
+
+}
+
 function showBigPicture(numberOfPicture) {
 
   var commentsContainer = document.querySelector('.social__comments');
@@ -241,10 +251,24 @@ function showImageEditor() {
 
 function hideImageEditor() {
 
+  // Закрытие окна при клике на крестик
+
   document.querySelector('.img-upload__cancel').addEventListener('click', function() {
 
     if (! document.querySelector('.img-upload__overlay').classList.contains('hidden')) {
       document.querySelector('.img-upload__overlay').classList.add('hidden');
+      document.querySelector('#upload-file').value = '';
+    }
+
+  });
+
+  // Закрытие окна при нажатии ESC
+
+  window.addEventListener('keydown', function(event) {
+
+    if (event.key == 'Escape' && ! document.querySelector('.img-upload__overlay').classList.contains('hidden')) {
+      document.querySelector('.img-upload__overlay').classList.add('hidden');
+      document.querySelector('#upload-file').value = '';
     }
 
   });
