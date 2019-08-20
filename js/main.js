@@ -57,9 +57,9 @@ var postedPhotos = [];
 drawPictures();
 uploadPicture();
 
-// showBigPicture(0);
-// hideDOMElement(document.querySelector('.social__comment-count'));
-// hideDOMElement(document.querySelector('.comments-loader'));
+showBigPicture();
+hideDOMElement(document.querySelector('.social__comment-count'));
+hideDOMElement(document.querySelector('.comments-loader'));
 
 /* Функции для показа изображений */
 
@@ -150,21 +150,34 @@ function createPicture(template, numberOfPicture) {
 
 /* Функции для работы с большим изображением */
 
-function getNumberOfChild(child, parent) {
+function getNumberOfPicture(picture) {
 
-  for (var i = 0; i < parent.length; i++) {
+  for (var i = 0; i < document.querySelectorAll('.picture').length; i++) {
 
-    if (parent[i] == child) return i;
+    if (document.querySelectorAll('.picture')[i] == picture.parentNode) return i;
 
   }
 
 }
 
-function showBigPicture(numberOfPicture) {
+function showBigPicture() {
+
+  document.querySelector('.pictures').addEventListener('click', function(event) {
+
+    var target = event.target;
+    if (target.className == 'picture__img') {
+      createBigPicture(getNumberOfPicture(target));
+      document.querySelector('.big-picture').classList.remove('hidden'); // Показываем большое изображение
+    }
+
+  });
+
+}
+
+function createBigPicture(numberOfPicture) {
 
   var commentsContainer = document.querySelector('.social__comments');
   var bigPicture = document.querySelector('.big-picture');
-  bigPicture.classList.remove('hidden'); // Показываем большое изображение
 
   // Заполнение большого изображения нужными данными
 
