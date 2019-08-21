@@ -152,20 +152,26 @@ function createPicture(template, numberOfPicture) {
 
 function getNumberOfPicture(picture) {
 
+  var number = 0;
+
   for (var i = 0; i < document.querySelectorAll('.picture').length; i++) {
 
-    if (document.querySelectorAll('.picture')[i] == picture.parentNode) return i;
+    if (document.querySelectorAll('.picture')[i] === picture.parentNode) {
+      number = i;
+    }
 
   }
+
+  return number;
 
 }
 
 function showBigPicture() {
 
-  document.querySelector('.pictures').addEventListener('click', function(event) {
+  document.querySelector('.pictures').addEventListener('click', function (event) {
 
     var target = event.target;
-    if (target.className == 'picture__img') {
+    if (target.className === 'picture__img') {
       createBigPicture(getNumberOfPicture(target));
       document.querySelector('.big-picture').classList.remove('hidden'); // Показываем большое изображение
     }
@@ -180,9 +186,9 @@ function hideBigPicture() {
 
   // Закрытие окна при клике на крестик
 
-  document.querySelector('.big-picture__cancel').addEventListener('click', function() {
+  document.querySelector('.big-picture__cancel').addEventListener('click', function () {
 
-    if (! document.querySelector('.big-picture').classList.contains('hidden')) {
+    if (!document.querySelector('.big-picture').classList.contains('hidden')) {
       document.querySelector('.big-picture').classList.add('hidden');
       lastShownComment = 0;
     }
@@ -191,9 +197,9 @@ function hideBigPicture() {
 
   // Закрытие окна при нажатии ESC
 
-  window.addEventListener('keydown', function(event) {
+  window.addEventListener('keydown', function (event) {
 
-    if (event.key == 'Escape' && ! document.querySelector('.big-picture').classList.contains('hidden')) {
+    if (event.key === 'Escape' && !document.querySelector('.big-picture').classList.contains('hidden')) {
       document.querySelector('.big-picture').classList.add('hidden');
       lastShownComment = 0;
     }
@@ -282,7 +288,7 @@ function uploadPicture() {
 
 function showImageEditor() {
 
-  document.querySelector('#upload-file').addEventListener('change', function() {
+  document.querySelector('#upload-file').addEventListener('change', function () {
 
     document.querySelector('.img-upload__overlay').classList.remove('hidden');
 
@@ -294,9 +300,9 @@ function hideImageEditor() {
 
   // Закрытие окна при клике на крестик
 
-  document.querySelector('.img-upload__cancel').addEventListener('click', function() {
+  document.querySelector('.img-upload__cancel').addEventListener('click', function () {
 
-    if (! document.querySelector('.img-upload__overlay').classList.contains('hidden')) {
+    if (!document.querySelector('.img-upload__overlay').classList.contains('hidden')) {
       document.querySelector('.img-upload__overlay').classList.add('hidden');
       document.querySelector('#upload-file').value = '';
     }
@@ -305,9 +311,9 @@ function hideImageEditor() {
 
   // Закрытие окна при нажатии ESC
 
-  window.addEventListener('keydown', function(event) {
+  window.addEventListener('keydown', function (event) {
 
-    if (event.key == 'Escape' && ! document.querySelector('.img-upload__overlay').classList.contains('hidden')) {
+    if (event.key === 'Escape' && !document.querySelector('.img-upload__overlay').classList.contains('hidden')) {
       document.querySelector('.img-upload__overlay').classList.add('hidden');
       document.querySelector('#upload-file').value = '';
     }
