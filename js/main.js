@@ -67,6 +67,17 @@ function drawPictures() {
 
   makePhotosArray();
   insertPhotosIntoDocument();
+  setTabIndexesForPictures();
+
+}
+
+function setTabIndexesForPictures() {
+
+  var pictures = document.querySelectorAll('.picture__img');
+
+  for (var i = 0; i < pictures.length; i++) {
+    pictures[i].setAttribute('tabindex', i + 1);
+  }
 
 }
 
@@ -177,6 +188,21 @@ function showBigPicture() {
     }
 
   });
+
+  window.addEventListener('keydown', function (event) {
+
+    if (event.key === 'Enter') {
+
+      var target = event.target;
+      if (target.className === 'picture__img') {
+        createBigPicture(getNumberOfPicture(target));
+        document.querySelector('.big-picture').classList.remove('hidden'); // Показываем большое изображение
+      }
+
+    }
+
+  });
+
 
   hideBigPicture();
 
