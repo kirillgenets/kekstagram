@@ -189,7 +189,7 @@ function showBigPicture() {
 
   });
 
-  window.addEventListener('keydown', function (event) {
+  document.addEventListener('keydown', function (event) {
 
     if (event.key === 'Enter') {
 
@@ -308,6 +308,7 @@ function uploadPicture() {
 
   showImageEditor();
   hideImageEditor();
+  usePictureFilter();
 
 }
 
@@ -342,6 +343,31 @@ function hideImageEditor() {
     if (event.key === 'Escape' && !document.querySelector('.img-upload__overlay').classList.contains('hidden')) {
       document.querySelector('.img-upload__overlay').classList.add('hidden');
       document.querySelector('#upload-file').value = '';
+    }
+
+  });
+
+}
+
+function usePictureFilter() {
+
+  document.querySelector('.effects__list').addEventListener('click', function (event) {
+
+    var target = event.target;
+    var image = document.querySelector('.img-upload__preview img');
+
+    if (target.classList.contains('effects__preview--chrome')) {
+      image.style.filter = 'grayscale(1)';
+    } else if (target.classList.contains('effects__preview--sepia')) {
+      image.style.filter = 'sepia(1)';
+    } else if (target.classList.contains('effects__preview--marvin')) {
+      image.style.filter = 'invert(1)';
+    } else if (target.classList.contains('effects__preview--phobos')) {
+      image.style.filter = 'blur(5px)';
+    } else if (target.classList.contains('effects__preview--heat')) {
+      image.style.filter = 'brightness(3)';
+    } else if (target.classList.contains('effects__preview--none')) {
+      image.style.filter = 'none';
     }
 
   });
