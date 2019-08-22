@@ -6,6 +6,8 @@ var MAX_LIKES_COUNT = 201;
 var MIN_LIKES_COUNT = 15;
 var MAX_AVATAR_NUMBER = 7;
 var PHOTOS_COUNT = 25;
+var MAX_BLUR_SATURATION = 5;
+var MAX_BRIGHTNESS_SATURATION = 3;
 
 var lastShownComment = 0;
 
@@ -351,25 +353,81 @@ function hideImageEditor() {
 
 function usePictureFilter() {
 
+  var image = document.querySelector('.img-upload__preview img');
+
   document.querySelector('.effects__list').addEventListener('click', function (event) {
 
     var target = event.target;
-    var image = document.querySelector('.img-upload__preview img');
+    image.filterName = 'none';
 
     if (target.classList.contains('effects__preview--chrome')) {
       image.style.filter = 'grayscale(1)';
+      image.setAttribute('data-filter-name', 'grayscale');
     } else if (target.classList.contains('effects__preview--sepia')) {
       image.style.filter = 'sepia(1)';
+      image.setAttribute('data-filter-name', 'sepia');
     } else if (target.classList.contains('effects__preview--marvin')) {
       image.style.filter = 'invert(1)';
+      image.setAttribute('data-filter-name', 'invert');
     } else if (target.classList.contains('effects__preview--phobos')) {
       image.style.filter = 'blur(5px)';
+      image.setAttribute('data-filter-name', 'blur');
     } else if (target.classList.contains('effects__preview--heat')) {
       image.style.filter = 'brightness(3)';
+      image.setAttribute('data-filter-name', 'brightness');
     } else if (target.classList.contains('effects__preview--none')) {
       image.style.filter = 'none';
+      image.setAttribute('data-filter-name', 'none');
     }
 
   });
+
+  changeFilterSaturation(image);
+
+}
+
+function changeFilterSaturation(image) {
+
+  var pin = document.querySelector('.effect-level__pin');
+  var slider = document.querySelector('.effect-level__line');
+
+  slider.addEventListener('mouseup', function (event) {
+
+    if (image.dataset.filterName === 'grayscale') {
+      image.style.filter = 'grayscale(' + countFilterSaturation(image.dataset.filterName, event.pageX, slider) + ')';
+    } else if (image.dataset.filterName === 'sepia') {
+      image.style.filter = 'sepia(' + countFilterSaturation(image.dataset.filterName, event.pageX, slider) + ')';
+    } else if (image.dataset.filterName === 'invert') {
+      image.style.filter = 'invert(' + countFilterSaturation(image.dataset.filterName, event.pageX, slider) + ')';
+    } else if (image.dataset.filterName === 'blur') {
+      image.style.filter = 'blur(' + countFilterSaturation(image.dataset.filterName, event.pageX, slider) + ')';
+    } else if (image.dataset.filterName === 'brightness') {
+      image.style.filter = 'brightness(' + countFilterSaturation(image.dataset.filterName, event.pageX, slider) + ')';
+    }
+
+  });
+
+}
+
+function countFilterSaturation(filter, pinCoords, line) {
+
+  var start = line.getBoundingClientRect().left;
+  var finish = line.getBoundingClientRect().right;
+  var lineWidth = line.clientWidth;
+
+  switch (filter) {
+
+    case 'blur':
+      return (Math.floor(pinCoords - start) / lineWidth).toFixed(2) * MAX_BLUR_SATURATION + 'px';
+      break;
+
+    case 'brightness':
+      return (Math.floor(pinCoords - start) / lineWidth).toFixed(2) * MAX_BRIGHTNESS_SATURATION;
+      break;
+
+    default:
+      return (Math.floor(pinCoords - start) / lineWidth).toFixed(2);
+
+  }
 
 }
