@@ -8,6 +8,7 @@ var MAX_AVATAR_NUMBER = 7;
 var PHOTOS_COUNT = 25;
 var MAX_BLUR_SATURATION = 5;
 var MAX_BRIGHTNESS_SATURATION = 3;
+var DEFAULT_PIN_POSITION = '20%';
 
 var lastShownComment = 0;
 
@@ -355,6 +356,8 @@ function usePictureFilter() {
 
   var image = document.querySelector('.img-upload__preview img');
 
+  // Выбор фильтра по клику
+
   document.querySelector('.effects__list').addEventListener('click', function (event) {
 
     var target = event.target;
@@ -363,21 +366,27 @@ function usePictureFilter() {
     if (target.classList.contains('effects__preview--chrome')) {
       image.style.filter = 'grayscale(1)';
       image.setAttribute('data-filter-name', 'grayscale');
+      replacePin(document.querySelector('.effect-level__pin'), document.querySelector('.effect-level__depth'), DEFAULT_PIN_POSITION);
     } else if (target.classList.contains('effects__preview--sepia')) {
       image.style.filter = 'sepia(1)';
       image.setAttribute('data-filter-name', 'sepia');
+      replacePin(document.querySelector('.effect-level__pin'), document.querySelector('.effect-level__depth'), DEFAULT_PIN_POSITION);
     } else if (target.classList.contains('effects__preview--marvin')) {
       image.style.filter = 'invert(1)';
       image.setAttribute('data-filter-name', 'invert');
+      replacePin(document.querySelector('.effect-level__pin'), document.querySelector('.effect-level__depth'), DEFAULT_PIN_POSITION);
     } else if (target.classList.contains('effects__preview--phobos')) {
       image.style.filter = 'blur(5px)';
       image.setAttribute('data-filter-name', 'blur');
+      replacePin(document.querySelector('.effect-level__pin'), document.querySelector('.effect-level__depth'), DEFAULT_PIN_POSITION);
     } else if (target.classList.contains('effects__preview--heat')) {
       image.style.filter = 'brightness(3)';
       image.setAttribute('data-filter-name', 'brightness');
+      replacePin(document.querySelector('.effect-level__pin'), document.querySelector('.effect-level__depth'), DEFAULT_PIN_POSITION);
     } else if (target.classList.contains('effects__preview--none')) {
       image.style.filter = 'none';
       image.setAttribute('data-filter-name', 'none');
+      replacePin(document.querySelector('.effect-level__pin'), document.querySelector('.effect-level__depth'), DEFAULT_PIN_POSITION);
     }
 
   });
@@ -389,20 +398,31 @@ function usePictureFilter() {
 function changeFilterSaturation(image) {
 
   var pin = document.querySelector('.effect-level__pin');
+  var depth = document.querySelector('.effect-level__depth');
   var slider = document.querySelector('.effect-level__line');
 
   slider.addEventListener('mouseup', function (event) {
 
+    var saturationInfo = countFilterSaturation(image.dataset.filterName, event.pageX, slider); // Информация о насыщенности фильтра
+
     if (image.dataset.filterName === 'grayscale') {
-      image.style.filter = 'grayscale(' + countFilterSaturation(image.dataset.filterName, event.pageX, slider) + ')';
+      image.style.filter = 'grayscale(' + saturationInfo.value + ')';
+      replacePin(pin, depth, saturationInfo.percents); // Меняем положение ползунка
     } else if (image.dataset.filterName === 'sepia') {
-      image.style.filter = 'sepia(' + countFilterSaturation(image.dataset.filterName, event.pageX, slider) + ')';
+      image.style.filter = 'sepia(' + saturationInfo.value + ')';
+      replacePin(pin, depth, saturationInfo.percents); // Меняем положение ползунка
     } else if (image.dataset.filterName === 'invert') {
-      image.style.filter = 'invert(' + countFilterSaturation(image.dataset.filterName, event.pageX, slider) + ')';
+      image.style.filter = 'invert(' + saturationInfo.value + ')';
+      replacePin(pin, depth, saturationInfo.percents); // Меняем положение ползунка
     } else if (image.dataset.filterName === 'blur') {
-      image.style.filter = 'blur(' + countFilterSaturation(image.dataset.filterName, event.pageX, slider) + ')';
+      image.style.filter = 'blur(' + saturationInfo.value + ')';
+      replacePin(pin, depth, saturationInfo.percents); // Меняем положение ползунка
     } else if (image.dataset.filterName === 'brightness') {
-      image.style.filter = 'brightness(' + countFilterSaturation(image.dataset.filterName, event.pageX, slider) + ')';
+      image.style.filter = 'brightness(' + saturationInfo.value + ')';
+      replacePin(pin, depth, saturationInfo.percents); // Меняем положение ползунка
+    } else {
+      image.style.filter = 'saturate(' + saturationInfo.value + ')';
+      replacePin(pin, depth, saturationInfo.percents); // Меняем положение ползунка
     }
 
   });
@@ -418,16 +438,32 @@ function countFilterSaturation(filter, pinCoords, line) {
   switch (filter) {
 
     case 'blur':
-      return (Math.floor(pinCoords - start) / lineWidth).toFixed(2) * MAX_BLUR_SATURATION + 'px';
+      return {
+        percents: (Math.floor(pinCoords - start) / lineWidth).toFixed(2) * 100 + '%',
+        value: (Math.floor(pinCoords - start) / lineWidth).toFixed(2) * MAX_BLUR_SATURATION + 'px'
+      };
       break;
 
     case 'brightness':
-      return (Math.floor(pinCoords - start) / lineWidth).toFixed(2) * MAX_BRIGHTNESS_SATURATION;
+      return {
+        percents: (Math.floor(pinCoords - start) / lineWidth).toFixed(2) * 100 + '%',
+        value: (Math.floor(pinCoords - start) / lineWidth).toFixed(2) * MAX_BRIGHTNESS_SATURATION
+      };
       break;
 
     default:
-      return (Math.floor(pinCoords - start) / lineWidth).toFixed(2);
+      return {
+        percents: (Math.floor(pinCoords - start) / lineWidth).toFixed(2) * 100 + '%',
+        value: (Math.floor(pinCoords - start) / lineWidth).toFixed(2)
+      };
 
   }
+
+}
+
+function replacePin(pin, depth, percents) {
+
+  pin.style.left = percents; // Меняем положение ползунка
+  depth.style.width = percents; // Меняем размер глубины
 
 }
