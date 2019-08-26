@@ -1,6 +1,6 @@
 'use strict';
 
-var MAX_SHOWN_COMMENTS_COUNT = 5;
+var SHOWN_COMMENTS_STEP = 5;
 var MAX_COMMENTS_COUNT = 14;
 var MAX_LIKES_COUNT = 201;
 var MIN_LIKES_COUNT = 15;
@@ -55,6 +55,45 @@ var descriptionsList = [
   'Круто же выглядит, правда?'
 ];
 
+var filters = [
+
+  {
+    name: 'chrome',
+    minSaturation: 0,
+    maxSaturation: 1,
+    measure: ''
+  },
+
+  {
+    name: 'sepia',
+    minSaturation: 0,
+    maxSaturation: 1,
+    measure: ''
+  },
+
+  {
+    name: 'invert',
+    minSaturation: 0,
+    maxSaturation: 100,
+    measure: '%'
+  },
+
+  {
+    name: 'blur',
+    minSaturation: 0,
+    maxSaturation: 3,
+    measure: 'px'
+  },
+
+  {
+    name: 'brightness',
+    minSaturation: 0,
+    maxSaturation: 3,
+    measure: ''
+  }
+
+]
+
 var postedPhotos = [];
 
 drawPictures();
@@ -70,23 +109,12 @@ function drawPictures() {
 
   makePhotosArray();
   insertPhotosIntoDocument();
-  setTabIndexesForPictures();
-
-}
-
-function setTabIndexesForPictures() {
-
-  var pictures = document.querySelectorAll('.picture__img');
-
-  for (var i = 0; i < pictures.length; i++) {
-    pictures[i].setAttribute('tabindex', i + 1);
-  }
 
 }
 
 function generateRandomComments() {
 
-  var commentsCount = generateRandomNumber(0, MAX_COMMENTS_COUNT);
+  var commentsCount = generateRandomNumber(1, MAX_COMMENTS_COUNT);
   var commentsList = [];
 
   for (var i = 0; i < commentsCount; i++) {
@@ -138,11 +166,11 @@ function insertPhotosIntoDocument() {
 
   // Формирование фрагмента
 
-  for (var i = 0; i < postedPhotos.length; i++) {
+  postedPhotos.forEach(function(picture, i) {
 
-    photosListFragment.appendChild(createPicture(pictureTemplate, i)); // Вставляем фрагмент в документ
+    photosListFragment.appendChild(createPicture(pictureTemplate, i));
 
-  }
+  })
 
   photosList.appendChild(photosListFragment);
 
@@ -154,7 +182,10 @@ function createPicture(template, numberOfPicture) {
 
   // Заполнение картинки данными из объекта
 
-  pictureTemplateClone.querySelector('.picture__img').src = postedPhotos[numberOfPicture].url; // Устанавливаем картинку
+  var pictureImg = pictureTemplateClone.querySelector('.picture__img');
+  pictureImg.src = postedPhotos[numberOfPicture].url; // Устанавливаем картинку
+  pictureImg.setAttribute('data-number', numberOfPicture);
+
   pictureTemplateClone.querySelector('.picture__comments').textContent = postedPhotos[numberOfPicture].comments.length; // Устанавливаем количество комментариев
   pictureTemplateClone.querySelector('.picture__likes').textContent = postedPhotos[numberOfPicture].likes; // Устанавливаем количество лайков
 
@@ -166,17 +197,7 @@ function createPicture(template, numberOfPicture) {
 
 function getNumberOfPicture(picture) {
 
-  var number = 0;
-
-  for (var i = 0; i < document.querySelectorAll('.picture').length; i++) {
-
-    if (document.querySelectorAll('.picture')[i] === picture.parentNode) {
-      number = i;
-    }
-
-  }
-
-  return number;
+  return picture.dataset.number;
 
 }
 
@@ -185,7 +206,7 @@ function showBigPicture() {
   document.querySelector('.pictures').addEventListener('click', function (event) {
 
     var target = event.target;
-    if (target.className === 'picture__img') {
+    if (target.className === 'picture__img' || target.className === 'picture') {
       createBigPicture(getNumberOfPicture(target));
       document.querySelector('.big-picture').classList.remove('hidden'); // Показываем большое изображение
     }
@@ -197,7 +218,7 @@ function showBigPicture() {
     if (event.key === 'Enter') {
 
       var target = event.target;
-      if (target.className === 'picture__img') {
+      if (target.className === 'picture__img' || target.className === 'picture') {
         createBigPicture(getNumberOfPicture(target));
         document.querySelector('.big-picture').classList.remove('hidden'); // Показываем большое изображение
       }
@@ -289,7 +310,7 @@ function showComments(destination, numberOfPicture) {
   // Формирование фрагмента
 
   var i = 0;
-  while (i < postedPhotos[numberOfPicture].comments.length && i < MAX_SHOWN_COMMENTS_COUNT && lastShownComment < postedPhotos[numberOfPicture].comments.length) {
+  while (i < postedPhotos[numberOfPicture].comments.length && i < SHOWN_COMMENTS_STEP && lastShownComment < postedPhotos[numberOfPicture].comments.length) {
     commentsFragment.appendChild(createComment(postedPhotos[numberOfPicture].comments[lastShownComment].message, postedPhotos[numberOfPicture].comments[lastShownComment].avatar));
     lastShownComment++;
     i++;
@@ -363,107 +384,28 @@ function usePictureFilter() {
     var target = event.target;
     image.filterName = 'none';
 
-    if (target.classList.contains('effects__preview--chrome')) {
-      image.style.filter = 'grayscale(1)';
-      image.setAttribute('data-filter-name', 'grayscale');
-      replacePin(document.querySelector('.effect-level__pin'), document.querySelector('.effect-level__depth'), DEFAULT_PIN_POSITION);
-    } else if (target.classList.contains('effects__preview--sepia')) {
-      image.style.filter = 'sepia(1)';
-      image.setAttribute('data-filter-name', 'sepia');
-      replacePin(document.querySelector('.effect-level__pin'), document.querySelector('.effect-level__depth'), DEFAULT_PIN_POSITION);
-    } else if (target.classList.contains('effects__preview--marvin')) {
-      image.style.filter = 'invert(1)';
-      image.setAttribute('data-filter-name', 'invert');
-      replacePin(document.querySelector('.effect-level__pin'), document.querySelector('.effect-level__depth'), DEFAULT_PIN_POSITION);
-    } else if (target.classList.contains('effects__preview--phobos')) {
-      image.style.filter = 'blur(5px)';
-      image.setAttribute('data-filter-name', 'blur');
-      replacePin(document.querySelector('.effect-level__pin'), document.querySelector('.effect-level__depth'), DEFAULT_PIN_POSITION);
-    } else if (target.classList.contains('effects__preview--heat')) {
-      image.style.filter = 'brightness(3)';
-      image.setAttribute('data-filter-name', 'brightness');
-      replacePin(document.querySelector('.effect-level__pin'), document.querySelector('.effect-level__depth'), DEFAULT_PIN_POSITION);
-    } else if (target.classList.contains('effects__preview--none')) {
-      image.style.filter = 'none';
-      image.setAttribute('data-filter-name', 'none');
-      replacePin(document.querySelector('.effect-level__pin'), document.querySelector('.effect-level__depth'), DEFAULT_PIN_POSITION);
-    }
-
-  });
-
-  changeFilterSaturation(image);
-
-}
-
-function changeFilterSaturation(image) {
-
-  var pin = document.querySelector('.effect-level__pin');
-  var depth = document.querySelector('.effect-level__depth');
-  var slider = document.querySelector('.effect-level__line');
-
-  slider.addEventListener('mouseup', function (event) {
-
-    var saturationInfo = countFilterSaturation(image.dataset.filterName, event.pageX, slider); // Информация о насыщенности фильтра
-
-    if (image.dataset.filterName === 'grayscale') {
-      image.style.filter = 'grayscale(' + saturationInfo.value + ')';
-      replacePin(pin, depth, saturationInfo.percents); // Меняем положение ползунка
-    } else if (image.dataset.filterName === 'sepia') {
-      image.style.filter = 'sepia(' + saturationInfo.value + ')';
-      replacePin(pin, depth, saturationInfo.percents); // Меняем положение ползунка
-    } else if (image.dataset.filterName === 'invert') {
-      image.style.filter = 'invert(' + saturationInfo.value + ')';
-      replacePin(pin, depth, saturationInfo.percents); // Меняем положение ползунка
-    } else if (image.dataset.filterName === 'blur') {
-      image.style.filter = 'blur(' + saturationInfo.value + ')';
-      replacePin(pin, depth, saturationInfo.percents); // Меняем положение ползунка
-    } else if (image.dataset.filterName === 'brightness') {
-      image.style.filter = 'brightness(' + saturationInfo.value + ')';
-      replacePin(pin, depth, saturationInfo.percents); // Меняем положение ползунка
-    } else {
-      image.style.filter = 'saturate(' + saturationInfo.value + ')';
-      replacePin(pin, depth, saturationInfo.percents); // Меняем положение ползунка
-    }
+    clearFilters(image);
+    useFilter(image, target);
 
   });
 
 }
 
-function countFilterSaturation(filter, pinCoords, line) {
+function useFilter(image, filterElement) {
 
-  var start = line.getBoundingClientRect().left;
-  var finish = line.getBoundingClientRect().right;
-  var lineWidth = line.clientWidth;
+  var numberOfFilter = 0;
+  var filterName = '';
 
-  switch (filter) {
+  do {
+    numberOfFilter++
+  } while (filterElement.classList.contains('effects__preview--' + filters[numberOfFilter].name));
 
-    case 'blur':
-      return {
-        percents: (Math.floor(pinCoords - start) / lineWidth).toFixed(2) * 100 + '%',
-        value: (Math.floor(pinCoords - start) / lineWidth).toFixed(2) * MAX_BLUR_SATURATION + 'px'
-      };
-      break;
-
-    case 'brightness':
-      return {
-        percents: (Math.floor(pinCoords - start) / lineWidth).toFixed(2) * 100 + '%',
-        value: (Math.floor(pinCoords - start) / lineWidth).toFixed(2) * MAX_BRIGHTNESS_SATURATION
-      };
-      break;
-
-    default:
-      return {
-        percents: (Math.floor(pinCoords - start) / lineWidth).toFixed(2) * 100 + '%',
-        value: (Math.floor(pinCoords - start) / lineWidth).toFixed(2)
-      };
-
-  }
+  image.classList.add('effects__preview--' + filters[numberOfFilter - 1].name);
 
 }
 
-function replacePin(pin, depth, percents) {
+function clearFilters(image) {
 
-  pin.style.left = percents; // Меняем положение ползунка
-  depth.style.width = percents; // Меняем размер глубины
+  image.style.className = '';
 
 }
