@@ -6,9 +6,6 @@ var MAX_LIKES_COUNT = 201;
 var MIN_LIKES_COUNT = 15;
 var MAX_AVATAR_NUMBER = 7;
 var PHOTOS_COUNT = 25;
-var MAX_BLUR_SATURATION = 5;
-var MAX_BRIGHTNESS_SATURATION = 3;
-var DEFAULT_PIN_POSITION = '20%';
 
 var lastShownComment = 0;
 
@@ -58,6 +55,10 @@ var descriptionsList = [
 var filters = [
 
   {
+    name: 'none',
+  },
+
+  {
     name: 'chrome',
     minSaturation: 0,
     maxSaturation: 1,
@@ -72,38 +73,42 @@ var filters = [
   },
 
   {
-    name: 'invert',
+    name: 'marvin',
     minSaturation: 0,
     maxSaturation: 100,
     measure: '%'
   },
 
   {
-    name: 'blur',
+    name: 'phobos',
     minSaturation: 0,
     maxSaturation: 3,
     measure: 'px'
   },
 
   {
-    name: 'brightness',
+    name: 'heat',
     minSaturation: 0,
     maxSaturation: 3,
     measure: ''
   }
 
-]
+];
 
 var postedPhotos = [];
 
-drawPictures();
+showPage();
 uploadPicture();
 
-showBigPicture();
-hideDOMElement(document.querySelector('.social__comment-count'));
-hideDOMElement(document.querySelector('.comments-loader'));
-
 /* Функции для показа изображений */
+
+function showPage() {
+
+  drawPictures();
+  onPictureClick();
+  onPictureKeyDown();
+
+}
 
 function drawPictures() {
 
@@ -166,11 +171,11 @@ function insertPhotosIntoDocument() {
 
   // Формирование фрагмента
 
-  postedPhotos.forEach(function(picture, i) {
+  postedPhotos.forEach(function (picture, i) {
 
     photosListFragment.appendChild(createPicture(pictureTemplate, i));
 
-  })
+  });
 
   photosList.appendChild(photosListFragment);
 
@@ -201,33 +206,33 @@ function getNumberOfPicture(picture) {
 
 }
 
-function showBigPicture() {
+function drawBigPicture(evt) {
 
-  document.querySelector('.pictures').addEventListener('click', function (event) {
+  var target = evt.target;
 
-    var target = event.target;
+  if (evt.type === 'keydown' && evt.key === 'Enter') {
+
+    if (target.className === 'picture') {
+      showBigPicture(target.querySelector('.picture__img'));
+    }
+
+  } else if (evt.type === 'click') {
+
     if (target.className === 'picture__img' || target.className === 'picture') {
-      createBigPicture(getNumberOfPicture(target));
-      document.querySelector('.big-picture').classList.remove('hidden'); // Показываем большое изображение
+      showBigPicture(target);
     }
 
-  });
+  }
 
-  document.addEventListener('keydown', function (event) {
+}
 
-    if (event.key === 'Enter') {
+function showBigPicture(picture) {
 
-      var target = event.target;
-      if (target.className === 'picture__img' || target.className === 'picture') {
-        createBigPicture(getNumberOfPicture(target));
-        document.querySelector('.big-picture').classList.remove('hidden'); // Показываем большое изображение
-      }
+  createBigPicture(getNumberOfPicture(picture));
+  document.querySelector('.big-picture').classList.remove('hidden'); // Показываем большое изображение
 
-    }
-
-  });
-
-
+  hideDOMElement(document.querySelector('.social__comment-count'));
+  hideDOMElement(document.querySelector('.comments-loader'));
   hideBigPicture();
 
 }
@@ -384,28 +389,46 @@ function usePictureFilter() {
     var target = event.target;
     image.filterName = 'none';
 
-    clearFilters(image);
     useFilter(image, target);
 
   });
 
 }
 
-function useFilter(image, filterElement) {
+function useFilter(pic, target) {
 
-  var numberOfFilter = 0;
-  var filterName = '';
-
-  do {
-    numberOfFilter++
-  } while (filterElement.classList.contains('effects__preview--' + filters[numberOfFilter].name));
-
-  image.classList.add('effects__preview--' + filters[numberOfFilter - 1].name);
+  if (target.classList.contains('effects__preview')) {
+    pic.className = getFilterClassName(target);
+  }
 
 }
 
-function clearFilters(image) {
+function getFilterClassName(filterElement) {
 
-  image.style.className = '';
+  var filterName = filters.filter(function (filterObject) {
+
+    return filterElement.classList.contains('effects__preview--' + filterObject.name);
+
+  })[0].name;
+
+  return 'effects__preview--' + filterName;
+
+}
+
+/* ОБРАБОТЧИКИ */
+
+function onPictureClick() {
+
+  document.querySelector('.pictures').addEventListener('click', function (evt) {
+    drawBigPicture(evt);
+  });
+
+}
+
+function onPictureKeyDown() {
+
+  document.addEventListener('keydown', function (evt) {
+    drawBigPicture(evt);
+  });
 
 }
