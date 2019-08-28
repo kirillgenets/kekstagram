@@ -52,48 +52,52 @@ var descriptionsList = [
   'Круто же выглядит, правда?'
 ];
 
-var filters = [
+var filters = {
 
-  {
-    name: 'none',
-  },
-
-  {
-    name: 'chrome',
-    minSaturation: 0,
-    maxSaturation: 1,
+  chrome: {
+    effectName: 'chrome',
+    filterName: 'grayscale',
+    minLevel: 0,
+    maxLefel: 1,
     measure: ''
   },
-
-  {
-    name: 'sepia',
-    minSaturation: 0,
-    maxSaturation: 1,
+  sepia: {
+    effectName: 'sepia',
+    filterName: 'sepia',
+    minLevel: 0,
+    maxLefel: 1,
     measure: ''
   },
-
-  {
-    name: 'marvin',
-    minSaturation: 0,
-    maxSaturation: 100,
+  marvin: {
+    effectName: 'marvin',
+    filterName: 'invert',
+    minLevel: 0,
+    maxLefel: 100,
     measure: '%'
   },
-
-  {
-    name: 'phobos',
-    minSaturation: 0,
-    maxSaturation: 3,
+  phobos: {
+    effectName: 'phobos',
+    filterName: 'blur',
+    minLevel: 0,
+    maxLefel: 3,
     measure: 'px'
   },
-
-  {
-    name: 'heat',
-    minSaturation: 0,
-    maxSaturation: 3,
+  heat: {
+    effectName: 'heat',
+    filterName: 'brightness',
+    minLevel: 1,
+    maxLefel: 3,
     measure: ''
-  }
+  },
+  none: {
+    effectName: 'none',
+    filterName: 'none',
+    minLevel: null,
+    maxLefel: null,
+    measure: ''
+  },
 
-];
+}
 
 var postedPhotos = [];
 
@@ -105,8 +109,7 @@ uploadPicture();
 function showPage() {
 
   drawPictures();
-  onPictureClick();
-  onPictureKeyDown();
+  initStartListeners();
 
 }
 
@@ -206,26 +209,6 @@ function getNumberOfPicture(picture) {
 
 }
 
-function drawBigPicture(evt) {
-
-  var target = evt.target;
-
-  if (evt.type === 'keydown' && evt.key === 'Enter') {
-
-    if (target.className === 'picture') {
-      showBigPicture(target.querySelector('.picture__img'));
-    }
-
-  } else if (evt.type === 'click') {
-
-    if (target.className === 'picture__img' || target.className === 'picture') {
-      showBigPicture(target);
-    }
-
-  }
-
-}
-
 function showBigPicture(picture) {
 
   createBigPicture(getNumberOfPicture(picture));
@@ -233,33 +216,17 @@ function showBigPicture(picture) {
 
   hideDOMElement(document.querySelector('.social__comment-count'));
   hideDOMElement(document.querySelector('.comments-loader'));
-  hideBigPicture();
+
+  initBigPictureListeners();
 
 }
 
 function hideBigPicture() {
 
-  // Закрытие окна при клике на крестик
+  document.querySelector('.big-picture').classList.add('hidden');
+  lastShownComment = 0;
 
-  document.querySelector('.big-picture__cancel').addEventListener('click', function () {
-
-    if (!document.querySelector('.big-picture').classList.contains('hidden')) {
-      document.querySelector('.big-picture').classList.add('hidden');
-      lastShownComment = 0;
-    }
-
-  });
-
-  // Закрытие окна при нажатии ESC
-
-  window.addEventListener('keydown', function (event) {
-
-    if (event.key === 'Escape' && !document.querySelector('.big-picture').classList.contains('hidden')) {
-      document.querySelector('.big-picture').classList.add('hidden');
-      lastShownComment = 0;
-    }
-
-  });
+  removeBigPictureListeners();
 
 }
 
@@ -335,46 +302,23 @@ function hideDOMElement(element) {
 
 function uploadPicture() {
 
-  showImageEditor();
-  hideImageEditor();
   usePictureFilter();
 
 }
 
-
 function showImageEditor() {
 
-  document.querySelector('#upload-file').addEventListener('change', function () {
-
-    document.querySelector('.img-upload__overlay').classList.remove('hidden');
-
-  });
+  document.querySelector('.img-upload__overlay').classList.remove('hidden');
+  initImageEditorListeners();
 
 }
 
 function hideImageEditor() {
 
-  // Закрытие окна при клике на крестик
+  document.querySelector('.img-upload__overlay').classList.add('hidden');
+  document.querySelector('#upload-file').value = '';
 
-  document.querySelector('.img-upload__cancel').addEventListener('click', function () {
-
-    if (!document.querySelector('.img-upload__overlay').classList.contains('hidden')) {
-      document.querySelector('.img-upload__overlay').classList.add('hidden');
-      document.querySelector('#upload-file').value = '';
-    }
-
-  });
-
-  // Закрытие окна при нажатии ESC
-
-  window.addEventListener('keydown', function (event) {
-
-    if (event.key === 'Escape' && !document.querySelector('.img-upload__overlay').classList.contains('hidden')) {
-      document.querySelector('.img-upload__overlay').classList.add('hidden');
-      document.querySelector('#upload-file').value = '';
-    }
-
-  });
+  removeImageEditorListeners();
 
 }
 
@@ -415,20 +359,116 @@ function getFilterClassName(filterElement) {
 
 }
 
-/* ОБРАБОТЧИКИ */
+/* ИНИЦИАТОРЫ ОБРАБОТЧИКОВ */
 
-function onPictureClick() {
+function initStartListeners() {
 
-  document.querySelector('.pictures').addEventListener('click', function (evt) {
-    drawBigPicture(evt);
-  });
+  var pictures = document.querySelector('.pictures');
+
+  pictures.addEventListener('click', onPictureClick);
+
+  pictures.addEventListener('keydown', onPictureKeyDown);
+
+  document.querySelector('#upload-file').addEventListener('change', onUploadButtonChange);
 
 }
 
-function onPictureKeyDown() {
+function removeStartListeners() {
 
-  document.addEventListener('keydown', function (evt) {
-    drawBigPicture(evt);
-  });
+  var pictures = document.querySelector('.pictures');
+
+  pictures.removeEventListener('click', onPictureClick);
+
+  pictures.removeEventListener('keydown', onPictureKeyDown);
+
+  document.querySelector('#upload-file').removeEventListener('change', onUploadButtonChange);
+
+}
+
+function initImageEditorListeners() {
+
+  document.querySelector('#upload-cancel').addEventListener('click', onImageEditorCancelClick);
+
+  document.addEventListener('keydown', onImageEditorCancelKeyDown);
+
+}
+
+function removeImageEditorListeners() {
+
+  document.querySelector('#upload-cancel').removeEventListener('click', onImageEditorCancelClick);
+
+  document.removeEventListener('keydown', onImageEditorCancelKeyDown);
+
+}
+
+function initBigPictureListeners() {
+
+  document.querySelector('#picture-cancel').addEventListener('click', onBigPictureCancelClick);
+
+  document.addEventListener('keydown', onBigPictureCancelKeyDown);
+
+}
+
+function removeBigPictureListeners() {
+
+  document.querySelector('#picture-cancel').removeEventListener('click', onBigPictureCancelClick);
+
+  document.removeEventListener('keydown', onBigPictureCancelKeyDown);
+
+}
+
+/* ОБРАБОТЧИКИ */
+
+function onPictureClick(evt) {
+
+  var target = evt.target;
+
+  if (target.className === 'picture__img') {
+    showBigPicture(target);
+  }
+
+}
+
+function onPictureKeyDown(evt) {
+
+  var target = evt.target;
+
+  if (evt.key === 'Enter' && target.className === 'picture') {
+    showBigPicture(target.querySelector('.picture__img'));
+  }
+
+}
+
+function onUploadButtonChange() {
+
+  showImageEditor();
+
+}
+
+function onImageEditorCancelClick() {
+
+  hideImageEditor();
+
+}
+
+function onImageEditorCancelKeyDown(evt) {
+
+  if (evt.key === 'Escape') {
+    hideImageEditor();
+  }
+
+}
+
+function onBigPictureCancelClick() {
+
+  hideBigPicture();
+
+}
+
+function onBigPictureCancelKeyDown(evt) {
+
+  if (evt.key === 'Escape') {
+    hideBigPicture();
+  }
 
 }
