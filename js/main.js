@@ -7,8 +7,6 @@ var MIN_LIKES_COUNT = 15;
 var MAX_AVATAR_NUMBER = 7;
 var PHOTOS_COUNT = 25;
 
-var lastShownComment = 0;
-
 var peopleNames = [
   'Абрам',
   'Август',
@@ -175,9 +173,7 @@ function insertPhotosIntoDocument() {
   // Формирование фрагмента
 
   postedPhotos.forEach(function (picture, i) {
-
     photosListFragment.appendChild(createPicture(pictureTemplate, i));
-
   });
 
   photosList.appendChild(photosListFragment);
@@ -211,28 +207,26 @@ function getNumberOfPicture(picture) {
 
 function showBigPicture(picture) {
 
-  createBigPicture(getNumberOfPicture(picture));
   document.querySelector('.big-picture').classList.remove('hidden'); // Показываем большое изображение
+  initBigPictureListeners();
+
+}
+
+function hideBigPictureExtraElements() {
 
   hideDOMElement(document.querySelector('.social__comment-count'));
   hideDOMElement(document.querySelector('.comments-loader'));
-
-  initBigPictureListeners();
 
 }
 
 function hideBigPicture() {
 
   document.querySelector('.big-picture').classList.add('hidden');
-  lastShownComment = 0;
-
-  removeBigPictureListeners();
 
 }
 
 function createBigPicture(numberOfPicture) {
 
-  var commentsContainer = document.querySelector('.social__comments');
   var bigPicture = document.querySelector('.big-picture');
 
   // Заполнение большого изображения нужными данными
@@ -242,12 +236,18 @@ function createBigPicture(numberOfPicture) {
   bigPicture.querySelector('.likes-count').textContent = postedPhotos[numberOfPicture].likes;
   bigPicture.querySelector('.comments-count').textContent = postedPhotos[numberOfPicture].comments.length;
 
+}
+
+function clearComments() {
+
+  var commentsContainer = document.querySelector('.social__comments');
+
+  commentsContainer.setAttribute('data-last-comment', 0)
   commentsContainer.innerHTML = '';
-  showComments(commentsContainer, numberOfPicture);
 
 }
 
-function createComment(message, avatarSrc) {
+function createComment(commentObj) {
 
   // Формирование контейнера комментария
 
@@ -258,7 +258,7 @@ function createComment(message, avatarSrc) {
 
   var avatarImage = document.createElement('img');
   avatarImage.className = 'social__picture';
-  avatarImage.src = avatarSrc;
+  avatarImage.src = commentObj.avatar;
   avatarImage.alt = 'Аватар комментатора фотографии';
   avatarImage.width = 35;
   avatarImage.height = 35;
@@ -268,27 +268,27 @@ function createComment(message, avatarSrc) {
 
   var commentMessage = document.createElement('p');
   commentMessage.className = 'social__text';
-  commentMessage.textContent = message;
+  commentMessage.textContent = commentObj.message;
   comment.appendChild(commentMessage);
 
-  return comment;
+  document.querySelector('.social__comments').appendChild(comment);
 
 }
 
-function showComments(destination, numberOfPicture) {
+function showComments(numberOfPicture) {
 
-  var commentsFragment = document.createDocumentFragment(); // Создаем фрагмент для вставки
+  var commentsContainer = document.querySelector('.social__comments');
+  var comments = postedPhotos[numberOfPicture].comments;
+  var startIndexOfComment = +commentsContainer.dataset.lastComment;
+  var endIndexOfComment = startIndexOfComment + SHOWN_COMMENTS_STEP;
 
-  // Формирование фрагмента
-
-  var i = 0;
-  while (i < postedPhotos[numberOfPicture].comments.length && i < SHOWN_COMMENTS_STEP && lastShownComment < postedPhotos[numberOfPicture].comments.length) {
-    commentsFragment.appendChild(createComment(postedPhotos[numberOfPicture].comments[lastShownComment].message, postedPhotos[numberOfPicture].comments[lastShownComment].avatar));
-    lastShownComment++;
-    i++;
+  if (endIndexOfComment > comments.length) {
+    endIndexOfComment = comments.length;
   }
 
-  destination.appendChild(commentsFragment); // Вставка фрагмента в документ
+  comments.slice(startIndexOfComment, endIndexOfComment).forEach(createComment);
+  startIndexOfComment = endIndexOfComment;
+  commentsContainer.setAttribute('data-last-comment', startIndexOfComment);
 
 }
 
@@ -317,8 +317,6 @@ function hideImageEditor() {
 
   document.querySelector('.img-upload__overlay').classList.add('hidden');
   document.querySelector('#upload-file').value = '';
-
-  removeImageEditorListeners();
 
 }
 
@@ -364,11 +362,8 @@ function getFilterClassName(filterElement) {
 function initStartListeners() {
 
   var pictures = document.querySelector('.pictures');
-
   pictures.addEventListener('click', onPictureClick);
-
   pictures.addEventListener('keydown', onPictureKeyDown);
-
   document.querySelector('#upload-file').addEventListener('change', onUploadButtonChange);
 
 }
@@ -376,11 +371,8 @@ function initStartListeners() {
 function removeStartListeners() {
 
   var pictures = document.querySelector('.pictures');
-
   pictures.removeEventListener('click', onPictureClick);
-
   pictures.removeEventListener('keydown', onPictureKeyDown);
-
   document.querySelector('#upload-file').removeEventListener('change', onUploadButtonChange);
 
 }
@@ -388,7 +380,6 @@ function removeStartListeners() {
 function initImageEditorListeners() {
 
   document.querySelector('#upload-cancel').addEventListener('click', onImageEditorCancelClick);
-
   document.addEventListener('keydown', onImageEditorCancelKeyDown);
 
 }
@@ -396,7 +387,6 @@ function initImageEditorListeners() {
 function removeImageEditorListeners() {
 
   document.querySelector('#upload-cancel').removeEventListener('click', onImageEditorCancelClick);
-
   document.removeEventListener('keydown', onImageEditorCancelKeyDown);
 
 }
@@ -404,7 +394,6 @@ function removeImageEditorListeners() {
 function initBigPictureListeners() {
 
   document.querySelector('#picture-cancel').addEventListener('click', onBigPictureCancelClick);
-
   document.addEventListener('keydown', onBigPictureCancelKeyDown);
 
 }
@@ -412,7 +401,6 @@ function initBigPictureListeners() {
 function removeBigPictureListeners() {
 
   document.querySelector('#picture-cancel').removeEventListener('click', onBigPictureCancelClick);
-
   document.removeEventListener('keydown', onBigPictureCancelKeyDown);
 
 }
@@ -424,7 +412,11 @@ function onPictureClick(evt) {
   var target = evt.target;
 
   if (target.className === 'picture__img') {
+    createBigPicture(getNumberOfPicture(target));
+    clearComments();
+    showComments(getNumberOfPicture(target));
     showBigPicture(target);
+    hideBigPictureExtraElements();
   }
 
 }
@@ -434,7 +426,11 @@ function onPictureKeyDown(evt) {
   var target = evt.target;
 
   if (evt.key === 'Enter' && target.className === 'picture') {
+    createBigPicture(getNumberOfPicture(target.querySelector('.picture__img')));
+    clearComments();
+    showComments(getNumberOfPicture(target.querySelector('.picture__img')));
     showBigPicture(target.querySelector('.picture__img'));
+    hideBigPictureExtraElements();
   }
 
 }
@@ -448,6 +444,7 @@ function onUploadButtonChange() {
 function onImageEditorCancelClick() {
 
   hideImageEditor();
+  removeImageEditorListeners();
 
 }
 
@@ -455,6 +452,7 @@ function onImageEditorCancelKeyDown(evt) {
 
   if (evt.key === 'Escape') {
     hideImageEditor();
+    removeImageEditorListeners();
   }
 
 }
@@ -462,6 +460,7 @@ function onImageEditorCancelKeyDown(evt) {
 function onBigPictureCancelClick() {
 
   hideBigPicture();
+  removeBigPictureListeners();
 
 }
 
@@ -469,6 +468,7 @@ function onBigPictureCancelKeyDown(evt) {
 
   if (evt.key === 'Escape') {
     hideBigPicture();
+    removeBigPictureListeners();
   }
 
 }
