@@ -241,8 +241,6 @@ function createBigPicture(numberOfPicture) {
 function clearComments() {
 
   var commentsContainer = document.querySelector('.social__comments');
-
-  commentsContainer.setAttribute('data-last-comment', 0)
   commentsContainer.innerHTML = '';
 
 }
@@ -271,7 +269,7 @@ function createComment(commentObj) {
   commentMessage.textContent = commentObj.message;
   comment.appendChild(commentMessage);
 
-  document.querySelector('.social__comments').appendChild(comment);
+  this.appendChild(comment);
 
 }
 
@@ -279,16 +277,17 @@ function showComments(numberOfPicture) {
 
   var commentsContainer = document.querySelector('.social__comments');
   var comments = postedPhotos[numberOfPicture].comments;
-  var startIndexOfComment = +commentsContainer.dataset.lastComment;
   var endIndexOfComment = startIndexOfComment + SHOWN_COMMENTS_STEP;
 
   if (endIndexOfComment > comments.length) {
     endIndexOfComment = comments.length;
   }
 
-  comments.slice(startIndexOfComment, endIndexOfComment).forEach(createComment);
+  var commentsFragment = document.createDocumentFragment();
+
+  comments.slice(startIndexOfComment, endIndexOfComment).forEach(createComment, commentsFragment);
+  commentsContainer.appendChild(commentsFragment);
   startIndexOfComment = endIndexOfComment;
-  commentsContainer.setAttribute('data-last-comment', startIndexOfComment);
 
 }
 
