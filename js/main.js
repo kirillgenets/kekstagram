@@ -6,6 +6,8 @@ var MAX_LIKES_COUNT = 201;
 var MIN_LIKES_COUNT = 15;
 var MAX_AVATAR_NUMBER = 7;
 var PHOTOS_COUNT = 25;
+var AVATAR_WIDTH = 35;
+var AVATAR_HEIGHT = 35;
 
 var peopleNames = [
   'Абрам',
@@ -199,95 +201,144 @@ function createPicture(template, numberOfPicture) {
 
 /* Функции для работы с большим изображением */
 
+function drawBigPicture(picture) {
+
+  var numberOfPicture = getNumberOfPicture(picture);
+  var bigPicture = document.querySelector('.big-picture');
+  var commentsContainer = document.querySelector('.social__comments');
+  var startIndexOfComment = 0;
+
+  createBigPicture();
+  clearComments();
+  renderComments();
+  showBigPicture();
+  hideBigPictureExtraElements();
+
+  function createBigPicture() {
+
+    // Заполнение большого изображения нужными данными
+
+    bigPicture.querySelector('.big-picture__img img').src = postedPhotos[numberOfPicture].url;
+    bigPicture.querySelector('.social__caption').textContent = postedPhotos[numberOfPicture].description;
+    bigPicture.querySelector('.likes-count').textContent = postedPhotos[numberOfPicture].likes;
+    bigPicture.querySelector('.comments-count').textContent = postedPhotos[numberOfPicture].comments.length;
+
+  }
+
+  function clearComments() {
+
+    commentsContainer.innerHTML = '';
+
+  }
+
+  function renderComments() {
+
+    var comments = postedPhotos[numberOfPicture].comments;
+    var endIndexOfComment = startIndexOfComment + SHOWN_COMMENTS_STEP;
+    var commentsFragment = document.createDocumentFragment();
+
+    if (endIndexOfComment > comments.length) {
+      endIndexOfComment = comments.length;
+    }
+
+    comments.slice(startIndexOfComment, endIndexOfComment).forEach(createComment);
+    commentsContainer.appendChild(commentsFragment);
+    startIndexOfComment = endIndexOfComment;
+
+    function createComment(commentObj) {
+
+      // Формирование контейнера комментария
+
+      var comment = document.createElement('li');
+      comment.className = 'social__comment';
+
+      comment.appendChild(renderAvatar());
+      comment.appendChild(renderCommentMessage());
+
+      commentsFragment.appendChild(comment);
+
+      function renderAvatar() {
+
+        var avatarImage = document.createElement('img');
+        avatarImage.className = 'social__picture';
+        avatarImage.src = commentObj.avatar;
+        avatarImage.alt = 'Аватар комментатора фотографии';
+        avatarImage.width = AVATAR_WIDTH;
+        avatarImage.height = AVATAR_HEIGHT;
+
+        return avatarImage;
+
+      }
+
+      function renderCommentMessage() {
+
+        var commentMessage = document.createElement('p');
+        commentMessage.className = 'social__text';
+        commentMessage.textContent = commentObj.message;
+
+        return commentMessage;
+
+      }
+
+    }
+
+  }
+
+  function showBigPicture(picture) {
+
+    document.querySelector('.big-picture').classList.remove('hidden'); // Показываем большое изображение
+    initBigPictureListeners();
+
+    function initBigPictureListeners() {
+
+      document.querySelector('#picture-cancel').addEventListener('click', onBigPictureCancelClick);
+      document.addEventListener('keydown', onBigPictureCancelKeyDown);
+
+    }
+
+    function removeBigPictureListeners() {
+
+      document.querySelector('#picture-cancel').removeEventListener('click', onBigPictureCancelClick);
+      document.removeEventListener('keydown', onBigPictureCancelKeyDown);
+
+    }
+
+    function onBigPictureCancelClick() {
+
+      hideBigPicture();
+      removeBigPictureListeners();
+
+    }
+
+    function onBigPictureCancelKeyDown(evt) {
+
+      if (evt.key === 'Escape') {
+        hideBigPicture();
+        removeBigPictureListeners();
+      }
+
+    }
+
+  }
+
+  function hideBigPictureExtraElements() {
+
+    hideDOMElement(document.querySelector('.social__comment-count'));
+    hideDOMElement(document.querySelector('.comments-loader'));
+
+  }
+
+}
+
 function getNumberOfPicture(picture) {
 
   return picture.dataset.number;
 
 }
 
-function showBigPicture(picture) {
-
-  document.querySelector('.big-picture').classList.remove('hidden'); // Показываем большое изображение
-  initBigPictureListeners();
-
-}
-
-function hideBigPictureExtraElements() {
-
-  hideDOMElement(document.querySelector('.social__comment-count'));
-  hideDOMElement(document.querySelector('.comments-loader'));
-
-}
-
 function hideBigPicture() {
 
   document.querySelector('.big-picture').classList.add('hidden');
-
-}
-
-function createBigPicture(numberOfPicture) {
-
-  var bigPicture = document.querySelector('.big-picture');
-
-  // Заполнение большого изображения нужными данными
-
-  bigPicture.querySelector('.big-picture__img img').src = postedPhotos[numberOfPicture].url;
-  bigPicture.querySelector('.social__caption').textContent = postedPhotos[numberOfPicture].description;
-  bigPicture.querySelector('.likes-count').textContent = postedPhotos[numberOfPicture].likes;
-  bigPicture.querySelector('.comments-count').textContent = postedPhotos[numberOfPicture].comments.length;
-
-}
-
-function clearComments() {
-
-  var commentsContainer = document.querySelector('.social__comments');
-  commentsContainer.innerHTML = '';
-
-}
-
-function createComment(commentObj) {
-
-  // Формирование контейнера комментария
-
-  var comment = document.createElement('li');
-  comment.className = 'social__comment';
-
-  // Формирование аватарки комментария
-
-  var avatarImage = document.createElement('img');
-  avatarImage.className = 'social__picture';
-  avatarImage.src = commentObj.avatar;
-  avatarImage.alt = 'Аватар комментатора фотографии';
-  avatarImage.width = 35;
-  avatarImage.height = 35;
-  comment.appendChild(avatarImage);
-
-  // Формирование сообщения комментария
-
-  var commentMessage = document.createElement('p');
-  commentMessage.className = 'social__text';
-  commentMessage.textContent = commentObj.message;
-  comment.appendChild(commentMessage);
-
-  this.appendChild(comment);
-
-}
-
-function showComments(numberOfPicture) {
-
-  var commentsContainer = document.querySelector('.social__comments');
-  var comments = postedPhotos[numberOfPicture].comments;
-  var endIndexOfComment = startIndexOfComment + SHOWN_COMMENTS_STEP;
-
-  if (endIndexOfComment > comments.length) {
-    endIndexOfComment = comments.length;
-  }
-
-  var commentsFragment = document.createDocumentFragment();
-
-  comments.slice(startIndexOfComment, endIndexOfComment).forEach(createComment, commentsFragment);
-  commentsContainer.appendChild(commentsFragment);
-  startIndexOfComment = endIndexOfComment;
 
 }
 
@@ -390,20 +441,6 @@ function removeImageEditorListeners() {
 
 }
 
-function initBigPictureListeners() {
-
-  document.querySelector('#picture-cancel').addEventListener('click', onBigPictureCancelClick);
-  document.addEventListener('keydown', onBigPictureCancelKeyDown);
-
-}
-
-function removeBigPictureListeners() {
-
-  document.querySelector('#picture-cancel').removeEventListener('click', onBigPictureCancelClick);
-  document.removeEventListener('keydown', onBigPictureCancelKeyDown);
-
-}
-
 /* ОБРАБОТЧИКИ */
 
 function onPictureClick(evt) {
@@ -411,11 +448,7 @@ function onPictureClick(evt) {
   var target = evt.target;
 
   if (target.className === 'picture__img') {
-    createBigPicture(getNumberOfPicture(target));
-    clearComments();
-    showComments(getNumberOfPicture(target));
-    showBigPicture(target);
-    hideBigPictureExtraElements();
+    drawBigPicture(target);
   }
 
 }
@@ -425,11 +458,7 @@ function onPictureKeyDown(evt) {
   var target = evt.target;
 
   if (evt.key === 'Enter' && target.className === 'picture') {
-    createBigPicture(getNumberOfPicture(target.querySelector('.picture__img')));
-    clearComments();
-    showComments(getNumberOfPicture(target.querySelector('.picture__img')));
-    showBigPicture(target.querySelector('.picture__img'));
-    hideBigPictureExtraElements();
+    drawBigPicture(getNumberOfPicture(target.querySelector('.picture__img')));
   }
 
 }
@@ -452,22 +481,6 @@ function onImageEditorCancelKeyDown(evt) {
   if (evt.key === 'Escape') {
     hideImageEditor();
     removeImageEditorListeners();
-  }
-
-}
-
-function onBigPictureCancelClick() {
-
-  hideBigPicture();
-  removeBigPictureListeners();
-
-}
-
-function onBigPictureCancelKeyDown(evt) {
-
-  if (evt.key === 'Escape') {
-    hideBigPicture();
-    removeBigPictureListeners();
   }
 
 }
