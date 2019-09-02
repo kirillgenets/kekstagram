@@ -101,43 +101,10 @@ var filters = {
 
 var postedPhotos = [];
 
-showPage();
+renderPage();
 uploadPicture();
 
-/* Функции для показа изображений */
-
-function showPage() {
-
-  drawPictures();
-  initStartListeners();
-
-}
-
-function drawPictures() {
-
-  makePhotosArray();
-  insertPhotosIntoDocument();
-
-}
-
-function generateRandomComments() {
-
-  var commentsCount = generateRandomNumber(1, MAX_COMMENTS_COUNT);
-  var commentsList = [];
-
-  for (var i = 0; i < commentsCount; i++) {
-
-    commentsList.push({
-      avatar: 'img/avatar-' + generateRandomNumber(1, MAX_AVATAR_NUMBER) + '.svg',
-      message: generateRandomData(messagesList), // Берем рандомный комментарий из массива комментариев
-      name: generateRandomData(peopleNames) // Берем рандомное имя из массива имён
-    });
-
-  }
-
-  return commentsList;
-
-}
+/*ФУНКЦИИ ОБЩЕГО НАЗНАЧЕНИЯ*/
 
 function generateRandomData(source) {
 
@@ -151,55 +118,132 @@ function generateRandomNumber(min, max) {
 
 }
 
-function makePhotosArray() {
+function hideDOMElement(element) {
 
-  for (var i = 0; i < PHOTOS_COUNT; i++) {
+  element.classList.add('visually-hidden');
 
-    postedPhotos.push({
-      url: 'photos/' + (i + 1) + '.jpg',
-      description: generateRandomData(descriptionsList),
-      likes: generateRandomNumber(MIN_LIKES_COUNT, MAX_LIKES_COUNT),
-      comments: generateRandomComments()
-    });
+}
+
+/*ОСНОВНЫЕ ФУНКЦИИ*/
+
+function renderPage() {
+
+  drawPictures();
+
+  function drawPictures() {
+
+    makePhotosArray();
+    insertPhotosIntoDocument();
+
+    function makePhotosArray() {
+
+      for (var i = 0; i < PHOTOS_COUNT; i++) {
+
+        postedPhotos.push({
+          url: 'photos/' + (i + 1) + '.jpg',
+          description: generateRandomData(descriptionsList),
+          likes: generateRandomNumber(MIN_LIKES_COUNT, MAX_LIKES_COUNT),
+          comments: generateRandomComments()
+        });
+
+      }
+
+      function generateRandomComments() {
+
+        var commentsCount = generateRandomNumber(1, MAX_COMMENTS_COUNT);
+        var commentsList = [];
+
+        for (var i = 0; i < commentsCount; i++) {
+
+          commentsList.push({
+            avatar: 'img/avatar-' + generateRandomNumber(1, MAX_AVATAR_NUMBER) + '.svg',
+            message: generateRandomData(messagesList), // Берем рандомный комментарий из массива комментариев
+            name: generateRandomData(peopleNames) // Берем рандомное имя из массива имён
+          });
+
+        }
+
+        return commentsList;
+
+      }
+
+    }
+
+    function insertPhotosIntoDocument() {
+
+      var pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
+      var pictures = document.querySelector('.pictures');
+      var picturesFragment = document.createDocumentFragment(); // Создаем фрагмент для вставки
+
+      // Формирование фрагмента
+
+      postedPhotos.forEach(function (picture, i) {
+        picturesFragment.appendChild(createPicture(pictureTemplate, i));
+      });
+
+      pictures.appendChild(picturesFragment);
+
+      initPicturesListeners();
+
+      function createPicture(template, numberOfPicture) {
+
+        var pictureTemplateClone = template.cloneNode(true);
+
+        // Заполнение картинки данными из объекта
+
+        var pictureImg = pictureTemplateClone.querySelector('.picture__img');
+        pictureImg.src = postedPhotos[numberOfPicture].url; // Устанавливаем картинку
+        pictureImg.setAttribute('data-number', numberOfPicture);
+
+        pictureTemplateClone.querySelector('.picture__comments').textContent = postedPhotos[numberOfPicture].comments.length; // Устанавливаем количество комментариев
+        pictureTemplateClone.querySelector('.picture__likes').textContent = postedPhotos[numberOfPicture].likes; // Устанавливаем количество лайков
+
+        return pictureTemplateClone;
+
+      }
+
+      function initPicturesListeners() {
+
+        pictures.addEventListener('click', onPictureClick);
+        pictures.addEventListener('keydown', onPictureKeyDown);
+
+      }
+
+      function removePicturesListeners() {
+
+        pictures.removeEventListener('click', onPictureClick);
+        pictures.removeEventListener('keydown', onPictureKeyDown);
+
+      }
+
+
+      function onPictureClick(evt) {
+
+        var target = evt.target;
+
+        if (target.className === 'picture__img') {
+          drawBigPicture(target);
+        }
+
+      }
+
+      function onPictureKeyDown(evt) {
+
+        var target = evt.target;
+
+        if (evt.key === 'Enter' && target.className === 'picture') {
+          drawBigPicture(target.querySelector('.picture__img'));
+        }
+
+      }
+
+    }
 
   }
 
-}
-
-function insertPhotosIntoDocument() {
-
-  var pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
-  var photosList = document.querySelector('.pictures');
-  var photosListFragment = document.createDocumentFragment(); // Создаем фрагмент для вставки
-
-  // Формирование фрагмента
-
-  postedPhotos.forEach(function (picture, i) {
-    photosListFragment.appendChild(createPicture(pictureTemplate, i));
-  });
-
-  photosList.appendChild(photosListFragment);
+  document.querySelector('#upload-file').addEventListener('change', onUploadButtonChange);
 
 }
-
-function createPicture(template, numberOfPicture) {
-
-  var pictureTemplateClone = template.cloneNode(true);
-
-  // Заполнение картинки данными из объекта
-
-  var pictureImg = pictureTemplateClone.querySelector('.picture__img');
-  pictureImg.src = postedPhotos[numberOfPicture].url; // Устанавливаем картинку
-  pictureImg.setAttribute('data-number', numberOfPicture);
-
-  pictureTemplateClone.querySelector('.picture__comments').textContent = postedPhotos[numberOfPicture].comments.length; // Устанавливаем количество комментариев
-  pictureTemplateClone.querySelector('.picture__likes').textContent = postedPhotos[numberOfPicture].likes; // Устанавливаем количество лайков
-
-  return pictureTemplateClone;
-
-}
-
-/* Функции для работы с большим изображением */
 
 function drawBigPicture(picture) {
 
@@ -328,159 +372,115 @@ function drawBigPicture(picture) {
 
   }
 
-}
+  function getNumberOfPicture(picture) {
 
-function getNumberOfPicture(picture) {
+    return picture.dataset.number;
 
-  return picture.dataset.number;
+  }
 
-}
+  function hideBigPicture() {
 
-function hideBigPicture() {
+    document.querySelector('.big-picture').classList.add('hidden');
 
-  document.querySelector('.big-picture').classList.add('hidden');
-
-}
-
-function hideDOMElement(element) {
-
-  element.classList.add('visually-hidden');
-
-}
-
-/* Функции для редактора изображений */
-
-function uploadPicture() {
-
-  usePictureFilter();
-
-}
-
-function showImageEditor() {
-
-  document.querySelector('.img-upload__overlay').classList.remove('hidden');
-  initImageEditorListeners();
-
-}
-
-function hideImageEditor() {
-
-  document.querySelector('.img-upload__overlay').classList.add('hidden');
-  document.querySelector('#upload-file').value = '';
-
-}
-
-function usePictureFilter() {
-
-  var image = document.querySelector('.img-upload__preview img');
-
-  // Выбор фильтра по клику
-
-  document.querySelector('.effects__list').addEventListener('click', function (event) {
-
-    var target = event.target;
-    image.filterName = 'none';
-
-    useFilter(image, target);
-
-  });
-
-}
-
-function useFilter(pic, target) {
-
-  if (target.classList.contains('effects__preview')) {
-    pic.className = getFilterClassName(target);
   }
 
 }
 
-function getFilterClassName(filterElement) {
+function drawImageEditor() {
 
-  var filterName = filters.filter(function (filterObject) {
+  showImageEditor();
+  applyFilters();
 
-    return filterElement.classList.contains('effects__preview--' + filterObject.name);
+  function showImageEditor() {
 
-  })[0].name;
+    document.querySelector('.img-upload__overlay').classList.remove('hidden');
+    initImageEditorListeners();
 
-  return 'effects__preview--' + filterName;
+    function initImageEditorListeners() {
+
+      document.querySelector('#upload-cancel').addEventListener('click', onImageEditorCancelClick);
+      document.addEventListener('keydown', onImageEditorCancelKeyDown);
+
+    }
+
+    function removeImageEditorListeners() {
+
+      document.querySelector('#upload-cancel').removeEventListener('click', onImageEditorCancelClick);
+      document.removeEventListener('keydown', onImageEditorCancelKeyDown);
+      document.querySelector('#upload-file').removeEventListener('change', onUploadButtonChange);
+
+    }
+
+    function onImageEditorCancelClick() {
+
+      hideImageEditor();
+      removeImageEditorListeners();
+
+    }
+
+    function onImageEditorCancelKeyDown(evt) {
+
+      if (evt.key === 'Escape') {
+        hideImageEditor();
+        removeImageEditorListeners();
+      }
+
+    }
+
+  }
+
+  function applyFilters() {
+
+    var filtersList = document.querySelector('.effects__list');
+    var image = document.querySelector('.img-upload__preview img');
+
+    initImageEditorListeners();
+
+    function useFilter(filter) {
+
+      var currentFilter = filters[filter];
+
+      if (currentFilter.effectName === 'none') {
+        document.querySelector('.img-filters').classList.add('.img-filters--inactive');
+      } else {
+        image.className = 'effects__preview--' + currentFilter.effectName;
+      }
+
+    }
+
+    function hideImageEditor() {
+
+      document.querySelector('.img-upload__overlay').classList.add('hidden');
+      document.querySelector('#upload-file').value = '';
+
+      function removeImageEditorListeners() {
+
+        document.querySelector('#upload-file').removeEventListener('change', onUploadButtonChange);
+
+      }
+
+    }
+
+    function initImageEditorListeners() {
+
+      document.querySelector('.effects__list').addEventListener('focus', onFilterFocus);
+
+    }
+
+    function onFilterFocus(evt) {
+
+      useFilter(image, evt.target.value);
+
+    }
+
+  }
 
 }
 
 /* ИНИЦИАТОРЫ ОБРАБОТЧИКОВ */
 
-function initStartListeners() {
-
-  var pictures = document.querySelector('.pictures');
-  pictures.addEventListener('click', onPictureClick);
-  pictures.addEventListener('keydown', onPictureKeyDown);
-  document.querySelector('#upload-file').addEventListener('change', onUploadButtonChange);
-
-}
-
-function removeStartListeners() {
-
-  var pictures = document.querySelector('.pictures');
-  pictures.removeEventListener('click', onPictureClick);
-  pictures.removeEventListener('keydown', onPictureKeyDown);
-  document.querySelector('#upload-file').removeEventListener('change', onUploadButtonChange);
-
-}
-
-function initImageEditorListeners() {
-
-  document.querySelector('#upload-cancel').addEventListener('click', onImageEditorCancelClick);
-  document.addEventListener('keydown', onImageEditorCancelKeyDown);
-
-}
-
-function removeImageEditorListeners() {
-
-  document.querySelector('#upload-cancel').removeEventListener('click', onImageEditorCancelClick);
-  document.removeEventListener('keydown', onImageEditorCancelKeyDown);
-
-}
-
-/* ОБРАБОТЧИКИ */
-
-function onPictureClick(evt) {
-
-  var target = evt.target;
-
-  if (target.className === 'picture__img') {
-    drawBigPicture(target);
-  }
-
-}
-
-function onPictureKeyDown(evt) {
-
-  var target = evt.target;
-
-  if (evt.key === 'Enter' && target.className === 'picture') {
-    drawBigPicture(getNumberOfPicture(target.querySelector('.picture__img')));
-  }
-
-}
-
 function onUploadButtonChange() {
 
   showImageEditor();
-
-}
-
-function onImageEditorCancelClick() {
-
-  hideImageEditor();
-  removeImageEditorListeners();
-
-}
-
-function onImageEditorCancelKeyDown(evt) {
-
-  if (evt.key === 'Escape') {
-    hideImageEditor();
-    removeImageEditorListeners();
-  }
 
 }
