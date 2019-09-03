@@ -445,14 +445,6 @@ function drawImageEditor() {
 
   }
 
-  function onFilterFocus(evt) {
-
-    var target = evt.target;
-
-    useFilter(target.value);
-
-  }
-
   function showEffectLevel() {
 
     effectLevel.classList.remove('hidden');
@@ -485,6 +477,14 @@ function drawImageEditor() {
         filterDepth.style.width = '100%';
 
       }
+
+    }
+
+    function onFilterFocus(evt) {
+
+      var target = evt.target;
+
+      useFilter(target.value);
 
     }
 
