@@ -102,7 +102,6 @@ var filters = {
 var postedPhotos = [];
 
 renderPage();
-uploadPicture();
 
 /*ФУНКЦИИ ОБЩЕГО НАЗНАЧЕНИЯ*/
 
@@ -209,14 +208,6 @@ function renderPage() {
 
       }
 
-      function removePicturesListeners() {
-
-        pictures.removeEventListener('click', onPictureClick);
-        pictures.removeEventListener('keydown', onPictureKeyDown);
-
-      }
-
-
       function onPictureClick(evt) {
 
         var target = evt.target;
@@ -242,6 +233,12 @@ function renderPage() {
   }
 
   document.querySelector('#upload-file').addEventListener('change', onUploadButtonChange);
+
+  function onUploadButtonChange() {
+
+    drawImageEditor();
+
+  }
 
 }
 
@@ -388,6 +385,11 @@ function drawBigPicture(picture) {
 
 function drawImageEditor() {
 
+  var effectLevel = document.querySelector('.img-upload__effect-level');
+  var pin = document.querySelector('.effect-level__pin');
+  var filterDepth = document.querySelector('.effect-level__depth');
+
+  hideEffectLevel();
   showImageEditor();
   applyFilters();
 
@@ -400,14 +402,6 @@ function drawImageEditor() {
 
       document.querySelector('#upload-cancel').addEventListener('click', onImageEditorCancelClick);
       document.addEventListener('keydown', onImageEditorCancelKeyDown);
-
-    }
-
-    function removeImageEditorListeners() {
-
-      document.querySelector('#upload-cancel').removeEventListener('click', onImageEditorCancelClick);
-      document.removeEventListener('keydown', onImageEditorCancelKeyDown);
-      document.querySelector('#upload-file').removeEventListener('change', onUploadButtonChange);
 
     }
 
@@ -427,6 +421,42 @@ function drawImageEditor() {
 
     }
 
+    function hideImageEditor() {
+
+      document.querySelector('.img-upload__overlay').classList.add('hidden');
+      document.querySelector('#upload-file').value = '';
+
+      removeImageEditorListeners();
+
+      function removeImageEditorListeners() {
+
+        document.querySelector('#upload-cancel').removeEventListener('click', onImageEditorCancelClick);
+        document.removeEventListener('keydown', onImageEditorCancelKeyDown);
+
+      }
+
+    }
+
+  }
+
+  function hideEffectLevel() {
+
+    effectLevel.classList.add('hidden');
+
+  }
+
+  function onFilterFocus(evt) {
+
+    var target = evt.target;
+
+    useFilter(target.value);
+
+  }
+
+  function showEffectLevel() {
+
+    effectLevel.classList.remove('hidden');
+
   }
 
   function applyFilters() {
@@ -434,42 +464,33 @@ function drawImageEditor() {
     var filtersList = document.querySelector('.effects__list');
     var image = document.querySelector('.img-upload__preview img');
 
-    initImageEditorListeners();
+    initFiltersListeners();
 
     function useFilter(filter) {
 
       var currentFilter = filters[filter];
+      setPinStartPosition();
 
       if (currentFilter.effectName === 'none') {
-        document.querySelector('.img-filters').classList.add('.img-filters--inactive');
+        hideEffectLevel();
       } else {
-        image.className = 'effects__preview--' + currentFilter.effectName;
+        showEffectLevel();
+      }
+
+      image.className = 'effects__preview--' + currentFilter.effectName;
+
+      function setPinStartPosition() {
+
+        pin.style.left = '100%';
+        filterDepth.style.width = '100%';
+
       }
 
     }
 
-    function hideImageEditor() {
+    function initFiltersListeners() {
 
-      document.querySelector('.img-upload__overlay').classList.add('hidden');
-      document.querySelector('#upload-file').value = '';
-
-      function removeImageEditorListeners() {
-
-        document.querySelector('#upload-file').removeEventListener('change', onUploadButtonChange);
-
-      }
-
-    }
-
-    function initImageEditorListeners() {
-
-      document.querySelector('.effects__list').addEventListener('focus', onFilterFocus);
-
-    }
-
-    function onFilterFocus(evt) {
-
-      useFilter(image, evt.target.value);
+      document.querySelector('.effects__list').addEventListener('focus', onFilterFocus, true);
 
     }
 
@@ -477,10 +498,4 @@ function drawImageEditor() {
 
 }
 
-/* ИНИЦИАТОРЫ ОБРАБОТЧИКОВ */
-
-function onUploadButtonChange() {
-
-  showImageEditor();
-
-}
+/*ОБРАБОТЧИКИ*/
