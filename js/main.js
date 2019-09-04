@@ -123,6 +123,12 @@ function hideDOMElement(element) {
 
 }
 
+function getNumberOfPicture(picture) {
+
+  return picture.dataset.number;
+
+}
+
 /*ОСНОВНЫЕ ФУНКЦИИ*/
 
 function renderPage() {
@@ -213,7 +219,7 @@ function renderPage() {
         var target = evt.target;
 
         if (target.className === 'picture__img') {
-          drawBigPicture(target);
+          drawBigPicture(getNumberOfPicture(target));
         }
 
       }
@@ -223,7 +229,7 @@ function renderPage() {
         var target = evt.target;
 
         if (evt.key === 'Enter' && target.className === 'picture') {
-          drawBigPicture(target.querySelector('.picture__img'));
+          drawBigPicture(getNumberOfPicture(target.querySelector('.picture__img')));
         }
 
       }
@@ -242,9 +248,8 @@ function renderPage() {
 
 }
 
-function drawBigPicture(picture) {
+function drawBigPicture(numberOfPicture) {
 
-  var numberOfPicture = getNumberOfPicture(picture);
   var bigPicture = document.querySelector('.big-picture');
   var commentsContainer = document.querySelector('.social__comments');
   var startIndexOfComment = 0;
@@ -366,12 +371,6 @@ function drawBigPicture(picture) {
 
     hideDOMElement(document.querySelector('.social__comment-count'));
     hideDOMElement(document.querySelector('.comments-loader'));
-
-  }
-
-  function getNumberOfPicture(picture) {
-
-    return picture.dataset.number;
 
   }
 
