@@ -325,7 +325,7 @@ function drawBigPicture(picture) {
 
   }
 
-  function showBigPicture(picture) {
+  function showBigPicture() {
 
     document.querySelector('.big-picture').classList.remove('hidden'); // Показываем большое изображение
     initBigPictureListeners();
