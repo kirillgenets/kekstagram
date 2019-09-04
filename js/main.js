@@ -482,9 +482,7 @@ function drawImageEditor() {
 
     function onFilterFocus(evt) {
 
-      var target = evt.target;
-
-      useFilter(target.value);
+      useFilter(evt.target.value);
 
     }
 
