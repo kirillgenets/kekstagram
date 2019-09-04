@@ -452,7 +452,6 @@ function drawImageEditor() {
 
   function applyFilters() {
 
-    var filtersList = document.querySelector('.effects__list');
     var image = document.querySelector('.img-upload__preview img');
 
     initFiltersListeners();
