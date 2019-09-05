@@ -223,6 +223,7 @@ function renderPage() {
       function onPictureKeyDown(evt) {
 
         if (evt.key === 'Enter') {
+          evt.preventDefault();
           drawBigPicture(getNumberOfPicture(evt.target.querySelector('.picture__img')));
         }
 
@@ -354,6 +355,7 @@ function drawBigPicture(numberOfPicture) {
     function onBigPictureCancelKeyDown(evt) {
 
       if (evt.key === 'Escape') {
+        evt.preventDefault();
         hideBigPicture();
         removeBigPictureListeners();
       }
@@ -412,6 +414,7 @@ function drawImageEditor() {
     function onImageEditorCancelKeyDown(evt) {
 
       if (evt.key === 'Escape') {
+        evt.preventDefault();
         hideImageEditor();
         document.removeEventListener('keydown', onImageEditorCancelKeyDown);
       }
