@@ -216,20 +216,14 @@ function renderPage() {
 
       function onPictureClick(evt) {
 
-        var target = evt.target;
-
-        if (target.className === 'picture__img') {
-          drawBigPicture(getNumberOfPicture(target));
-        }
+        drawBigPicture(getNumberOfPicture(evt.target));
 
       }
 
       function onPictureKeyDown(evt) {
 
-        var target = evt.target;
-
-        if (evt.key === 'Enter' && target.className === 'picture') {
-          drawBigPicture(getNumberOfPicture(target.querySelector('.picture__img')));
+        if (evt.key === 'Enter') {
+          drawBigPicture(getNumberOfPicture(evt.target.querySelector('.picture__img')));
         }
 
       }
