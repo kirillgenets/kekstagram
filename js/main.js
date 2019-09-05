@@ -384,6 +384,7 @@ function drawBigPicture(numberOfPicture) {
 
 function drawImageEditor() {
 
+  var image = document.querySelector('.img-upload__preview img');
   var effectLevel = document.querySelector('.img-upload__effect-level');
   var pin = document.querySelector('.effect-level__pin');
   var filterDepth = document.querySelector('.effect-level__depth');
@@ -424,6 +425,7 @@ function drawImageEditor() {
 
       document.querySelector('.img-upload__overlay').classList.add('hidden');
       document.querySelector('#upload-file').value = '';
+      useFilter('none');
 
       removeImageEditorListeners();
 
@@ -452,31 +454,7 @@ function drawImageEditor() {
 
   function applyFilters() {
 
-    var image = document.querySelector('.img-upload__preview img');
-
     initFiltersListeners();
-
-    function useFilter(filter) {
-
-      var currentFilter = filters[filter];
-      setPinStartPosition();
-
-      if (currentFilter.effectName === 'none') {
-        hideEffectLevel();
-      } else {
-        showEffectLevel();
-      }
-
-      image.className = 'effects__preview--' + currentFilter.effectName;
-
-      function setPinStartPosition() {
-
-        pin.style.left = '100%';
-        filterDepth.style.width = '100%';
-
-      }
-
-    }
 
     function onFilterFocus(evt) {
 
@@ -487,6 +465,28 @@ function drawImageEditor() {
     function initFiltersListeners() {
 
       document.querySelector('.effects__list').addEventListener('focus', onFilterFocus, true);
+
+    }
+
+  }
+
+  function useFilter(filter) {
+
+    var currentFilter = filters[filter];
+    setPinStartPosition();
+
+    if (currentFilter.effectName === 'none') {
+      hideEffectLevel();
+    } else {
+      showEffectLevel();
+    }
+
+    image.className = 'effects__preview--' + currentFilter.effectName;
+
+    function setPinStartPosition() {
+
+      pin.style.left = '100%';
+      filterDepth.style.width = '100%';
 
     }
 
