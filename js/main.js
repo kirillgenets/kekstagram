@@ -182,17 +182,17 @@ function renderPage() {
 
       // Формирование фрагмента
 
-      postedPhotos.forEach(function (picture, i) {
-        picturesFragment.appendChild(createPicture(pictureTemplate, i));
+      postedPhotos.forEach(function (picture) {
+        picturesFragment.appendChild(createPicture(postedPhotos.indexOf(picture)));
       });
 
       pictures.appendChild(picturesFragment);
 
       initPicturesListeners();
 
-      function createPicture(template, numberOfPicture) {
+      function createPicture(numberOfPicture) {
 
-        var pictureTemplateClone = template.cloneNode(true);
+        var pictureTemplateClone = pictureTemplate.cloneNode(true);
 
         // Заполнение картинки данными из объекта
 
