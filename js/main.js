@@ -251,6 +251,7 @@ function renderPage() {
 function drawBigPicture(numberOfPicture) {
 
   var bigPicture = document.querySelector('.big-picture');
+  var cancelButton = document.querySelector('#picture-cancel');
   var commentsContainer = document.querySelector('.social__comments');
   var startIndexOfComment = 0;
 
@@ -332,19 +333,19 @@ function drawBigPicture(numberOfPicture) {
 
   function showBigPicture() {
 
-    document.querySelector('.big-picture').classList.remove('hidden'); // Показываем большое изображение
+    bigPicture.classList.remove('hidden'); // Показываем большое изображение
     initBigPictureListeners();
 
     function initBigPictureListeners() {
 
-      document.querySelector('#picture-cancel').addEventListener('click', onBigPictureCancelClick);
+      cancelButton.addEventListener('click', onBigPictureCancelClick);
       document.addEventListener('keydown', onBigPictureCancelKeyDown);
 
     }
 
     function removeBigPictureListeners() {
 
-      document.querySelector('#picture-cancel').removeEventListener('click', onBigPictureCancelClick);
+      cancelButton.removeEventListener('click', onBigPictureCancelClick);
       document.removeEventListener('keydown', onBigPictureCancelKeyDown);
 
     }
@@ -376,7 +377,7 @@ function drawBigPicture(numberOfPicture) {
 
   function hideBigPicture() {
 
-    document.querySelector('.big-picture').classList.add('hidden');
+    bigPicture.classList.add('hidden');
 
   }
 
@@ -385,6 +386,8 @@ function drawBigPicture(numberOfPicture) {
 function drawImageEditor() {
 
   var image = document.querySelector('.img-upload__preview img');
+  var overlay = document.querySelector('.img-upload__overlay');
+  var cancelButton = document.querySelector('#upload-cancel');
   var effectLevel = document.querySelector('.img-upload__effect-level');
   var pin = document.querySelector('.effect-level__pin');
   var filterDepth = document.querySelector('.effect-level__depth');
@@ -395,12 +398,12 @@ function drawImageEditor() {
 
   function showImageEditor() {
 
-    document.querySelector('.img-upload__overlay').classList.remove('hidden');
+    overlay.classList.remove('hidden');
     initImageEditorListeners();
 
     function initImageEditorListeners() {
 
-      document.querySelector('#upload-cancel').addEventListener('click', onImageEditorCancelClick);
+      cancelButton.addEventListener('click', onImageEditorCancelClick);
       document.addEventListener('keydown', onImageEditorCancelKeyDown);
 
     }
@@ -408,7 +411,7 @@ function drawImageEditor() {
     function onImageEditorCancelClick() {
 
       hideImageEditor();
-      removeImageEditorListeners();
+      cancelButton.removeEventListener('click', onImageEditorCancelClick);
 
     }
 
@@ -416,25 +419,16 @@ function drawImageEditor() {
 
       if (evt.key === 'Escape') {
         hideImageEditor();
-        removeImageEditorListeners();
+        document.removeEventListener('keydown', onImageEditorCancelKeyDown);
       }
 
     }
 
     function hideImageEditor() {
 
-      document.querySelector('.img-upload__overlay').classList.add('hidden');
+      overlay.classList.add('hidden');
       document.querySelector('#upload-file').value = '';
       useFilter('none');
-
-      removeImageEditorListeners();
-
-      function removeImageEditorListeners() {
-
-        document.querySelector('#upload-cancel').removeEventListener('click', onImageEditorCancelClick);
-        document.removeEventListener('keydown', onImageEditorCancelKeyDown);
-
-      }
 
     }
 
@@ -493,5 +487,3 @@ function drawImageEditor() {
   }
 
 }
-
-/*ОБРАБОТЧИКИ*/
