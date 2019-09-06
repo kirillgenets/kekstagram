@@ -335,19 +335,19 @@ function drawBigPicture(numberOfPicture) {
 
     function initBigPictureListeners() {
 
-      cancelButton.addEventListener('click', onBigPictureCancelClick);
+      cancelButton.addEventListener('click', onBigPictureCancelButtonClick);
       document.addEventListener('keydown', onBigPictureCancelKeyDown);
 
     }
 
     function removeBigPictureListeners() {
 
-      cancelButton.removeEventListener('click', onBigPictureCancelClick);
+      cancelButton.removeEventListener('click', onBigPictureCancelButtonClick);
       document.removeEventListener('keydown', onBigPictureCancelKeyDown);
 
     }
 
-    function onBigPictureCancelClick() {
+    function onBigPictureCancelButtonClick() {
 
       hideBigPicture();
       removeBigPictureListeners();
@@ -401,7 +401,7 @@ function drawImageEditor() {
 
     function initImageEditorListeners() {
 
-      cancelButton.addEventListener('click', onImageEditorCancelClick);
+      cancelButton.addEventListener('click', onImageEditorCancelButtonClick);
       document.addEventListener('keydown', onImageEditorCancelKeyDown);
       document.querySelector('.effects__list').addEventListener('focus', onFilterFocus, true);
 
@@ -414,7 +414,7 @@ function drawImageEditor() {
 
     }
 
-    function onImageEditorCancelClick() {
+    function onImageEditorCancelButtonClick() {
 
       hideImageEditor();
 
@@ -442,7 +442,7 @@ function drawImageEditor() {
       document.querySelector('#upload-file').value = '';
       clearFilter();
 
-      cancelButton.removeEventListener('click', onImageEditorCancelClick);
+      cancelButton.removeEventListener('click', onImageEditorCancelButtonClick);
       document.removeEventListener('keydown', onImageEditorCancelKeyDown);
       document.querySelector('.effects__list').removeEventListener('focus', onFilterFocus, true);
 
