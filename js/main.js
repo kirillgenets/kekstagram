@@ -183,7 +183,7 @@ function renderPage() {
       // Формирование фрагмента
 
       postedPhotos.forEach(function (picture) {
-        picturesFragment.appendChild(createPicture(postedPhotos.indexOf(picture)));
+        picturesFragment.appendChild(createPicture(picture));
       });
 
       pictures.appendChild(picturesFragment);
@@ -191,6 +191,23 @@ function renderPage() {
       var smallPictures = document.querySelectorAll('.picture');
 
       smallPictures.forEach(initPicturesListeners);
+
+      function createPicture(picture) {
+
+        var pictureTemplateClone = pictureTemplate.cloneNode(true);
+
+        // Заполнение картинки данными из объекта
+
+        var pictureImg = pictureTemplateClone.querySelector('.picture__img');
+        pictureImg.src = picture.url; // Устанавливаем картинку
+        pictureImg.setAttribute('data-number', postedPhotos.indexOf(picture));
+
+        pictureTemplateClone.querySelector('.picture__comments').textContent = picture.comments.length; // Устанавливаем количество комментариев
+        pictureTemplateClone.querySelector('.picture__likes').textContent = picture.likes; // Устанавливаем количество лайков
+
+        return pictureTemplateClone;
+
+      }
 
       function initPicturesListeners(picture) {
 
@@ -211,23 +228,6 @@ function renderPage() {
           }
 
         }
-
-      }
-
-      function createPicture(numberOfPicture) {
-
-        var pictureTemplateClone = pictureTemplate.cloneNode(true);
-
-        // Заполнение картинки данными из объекта
-
-        var pictureImg = pictureTemplateClone.querySelector('.picture__img');
-        pictureImg.src = postedPhotos[numberOfPicture].url; // Устанавливаем картинку
-        pictureImg.setAttribute('data-number', numberOfPicture);
-
-        pictureTemplateClone.querySelector('.picture__comments').textContent = postedPhotos[numberOfPicture].comments.length; // Устанавливаем количество комментариев
-        pictureTemplateClone.querySelector('.picture__likes').textContent = postedPhotos[numberOfPicture].likes; // Устанавливаем количество лайков
-
-        return pictureTemplateClone;
 
       }
 
