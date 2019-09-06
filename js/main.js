@@ -417,7 +417,6 @@ function drawImageEditor() {
     function onImageEditorCancelClick() {
 
       hideImageEditor();
-      cancelButton.removeEventListener('click', onImageEditorCancelClick);
 
     }
 
@@ -426,7 +425,6 @@ function drawImageEditor() {
       if (evt.key === 'Escape') {
         evt.preventDefault();
         hideImageEditor();
-        document.removeEventListener('keydown', onImageEditorCancelKeyDown);
       }
 
     }
@@ -443,6 +441,9 @@ function drawImageEditor() {
       overlay.classList.add('hidden');
       document.querySelector('#upload-file').value = '';
       clearFilter();
+
+      cancelButton.removeEventListener('click', onImageEditorCancelClick);
+      document.removeEventListener('keydown', onImageEditorCancelKeyDown);
 
     }
 
