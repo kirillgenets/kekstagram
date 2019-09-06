@@ -444,6 +444,7 @@ function drawImageEditor() {
 
       cancelButton.removeEventListener('click', onImageEditorCancelClick);
       document.removeEventListener('keydown', onImageEditorCancelKeyDown);
+      document.querySelector('.effects__list').removeEventListener('focus', onFilterFocus, true);
 
     }
 
