@@ -188,7 +188,31 @@ function renderPage() {
 
       pictures.appendChild(picturesFragment);
 
-      initPicturesListeners();
+      var smallPictures = document.querySelectorAll('.picture');
+
+      smallPictures.forEach(initPicturesListeners);
+
+      function initPicturesListeners(picture) {
+
+        picture.addEventListener('click', onPictureClick);
+        picture.addEventListener('keydown', onPictureKeyDown);
+
+        function onPictureClick(evt) {
+
+          drawBigPicture(getNumberOfPicture(evt.target));
+
+        }
+
+        function onPictureKeyDown(evt) {
+
+          if (evt.key === 'Enter') {
+            evt.preventDefault();
+            drawBigPicture(getNumberOfPicture(evt.target.querySelector('.picture__img')));
+          }
+
+        }
+
+      }
 
       function createPicture(numberOfPicture) {
 
@@ -204,28 +228,6 @@ function renderPage() {
         pictureTemplateClone.querySelector('.picture__likes').textContent = postedPhotos[numberOfPicture].likes; // Устанавливаем количество лайков
 
         return pictureTemplateClone;
-
-      }
-
-      function initPicturesListeners() {
-
-        pictures.addEventListener('click', onPictureClick);
-        pictures.addEventListener('keydown', onPictureKeyDown);
-
-      }
-
-      function onPictureClick(evt) {
-
-        drawBigPicture(getNumberOfPicture(evt.target));
-
-      }
-
-      function onPictureKeyDown(evt) {
-
-        if (evt.key === 'Enter') {
-          evt.preventDefault();
-          drawBigPicture(getNumberOfPicture(evt.target.querySelector('.picture__img')));
-        }
 
       }
 
@@ -387,10 +389,10 @@ function drawImageEditor() {
   var effectLevel = document.querySelector('.img-upload__effect-level');
   var pin = document.querySelector('.effect-level__pin');
   var filterDepth = document.querySelector('.effect-level__depth');
+  var currentFilter = '';
 
   hideEffectLevel();
   showImageEditor();
-  applyFilters();
 
   function showImageEditor() {
 
@@ -401,6 +403,14 @@ function drawImageEditor() {
 
       cancelButton.addEventListener('click', onImageEditorCancelClick);
       document.addEventListener('keydown', onImageEditorCancelKeyDown);
+      document.querySelector('.effects__list').addEventListener('focus', onFilterFocus, true);
+
+    }
+
+    function onFilterFocus(evt) {
+
+      clearFilter();
+      useFilter(evt.target.value);
 
     }
 
@@ -421,11 +431,40 @@ function drawImageEditor() {
 
     }
 
+    function clearFilter() {
+
+      image.classList.remove('effects__preview--' + currentFilter.effectName);
+      image.style.filter = '';
+
+    }
+
     function hideImageEditor() {
 
       overlay.classList.add('hidden');
       document.querySelector('#upload-file').value = '';
-      useFilter('none');
+      clearFilter();
+
+    }
+
+    function useFilter(filter) {
+
+      currentFilter = filters[filter];
+      setPinStartPosition();
+
+      if (currentFilter.effectName === 'none') {
+        hideEffectLevel();
+      } else {
+        showEffectLevel();
+      }
+
+      image.className = 'effects__preview--' + currentFilter.effectName;
+
+      function setPinStartPosition() {
+
+        pin.style.left = '100%';
+        filterDepth.style.width = '100%';
+
+      }
 
     }
 
@@ -440,46 +479,6 @@ function drawImageEditor() {
   function showEffectLevel() {
 
     effectLevel.classList.remove('hidden');
-
-  }
-
-  function applyFilters() {
-
-    initFiltersListeners();
-
-    function onFilterFocus(evt) {
-
-      useFilter(evt.target.value);
-
-    }
-
-    function initFiltersListeners() {
-
-      document.querySelector('.effects__list').addEventListener('focus', onFilterFocus, true);
-
-    }
-
-  }
-
-  function useFilter(filter) {
-
-    var currentFilter = filters[filter];
-    setPinStartPosition();
-
-    if (currentFilter.effectName === 'none') {
-      hideEffectLevel();
-    } else {
-      showEffectLevel();
-    }
-
-    image.className = 'effects__preview--' + currentFilter.effectName;
-
-    function setPinStartPosition() {
-
-      pin.style.left = '100%';
-      filterDepth.style.width = '100%';
-
-    }
 
   }
 
