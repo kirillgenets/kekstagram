@@ -125,7 +125,7 @@ function hideDOMElement(element) {
 
 function getNumberOfPicture(picture) {
 
-  return picture.querySelector('.picture__img').dataset.number;
+  return picture.dataset.number;
 
 }
 
@@ -198,9 +198,9 @@ function renderPage() {
 
         // Заполнение картинки данными из объекта
 
+        image.setAttribute('data-number', index);
         var pictureImg = image.querySelector('.picture__img');
         pictureImg.src = picture.url; // Устанавливаем картинку
-        pictureImg.setAttribute('data-number', index);
 
         image.querySelector('.picture__comments').textContent = picture.comments.length; // Устанавливаем количество комментариев
         image.querySelector('.picture__likes').textContent = picture.likes; // Устанавливаем количество лайков
@@ -216,7 +216,6 @@ function renderPage() {
 
         function onPictureClick(evt) {
 
-          console.log(evt.currentTarget)
           drawBigPicture(getNumberOfPicture(evt.currentTarget));
 
         }
@@ -225,7 +224,6 @@ function renderPage() {
 
           if (evt.key === 'Enter') {
             evt.preventDefault();
-            console.log(evt.currentTarget)
             drawBigPicture(getNumberOfPicture(evt.currentTarget));
           }
 
