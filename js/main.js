@@ -182,8 +182,8 @@ function renderPage() {
 
       // Формирование фрагмента
 
-      postedPhotos.forEach(function (picture) {
-        picturesFragment.appendChild(createPicture(picture));
+      postedPhotos.forEach(function (picture, index) {
+        picturesFragment.appendChild(createPicture(picture, index));
       });
 
       pictures.appendChild(picturesFragment);
@@ -192,20 +192,20 @@ function renderPage() {
 
       smallPictures.forEach(initPicturesListeners);
 
-      function createPicture(picture) {
+      function createPicture(picture, index) {
 
-        var pictureTemplateClone = pictureTemplate.cloneNode(true);
+        var image = pictureTemplate.cloneNode(true);
 
         // Заполнение картинки данными из объекта
 
-        var pictureImg = pictureTemplateClone.querySelector('.picture__img');
+        var pictureImg = image.querySelector('.picture__img');
         pictureImg.src = picture.url; // Устанавливаем картинку
-        pictureImg.setAttribute('data-number', postedPhotos.indexOf(picture));
+        pictureImg.setAttribute('data-number', index);
 
-        pictureTemplateClone.querySelector('.picture__comments').textContent = picture.comments.length; // Устанавливаем количество комментариев
-        pictureTemplateClone.querySelector('.picture__likes').textContent = picture.likes; // Устанавливаем количество лайков
+        image.querySelector('.picture__comments').textContent = picture.comments.length; // Устанавливаем количество комментариев
+        image.querySelector('.picture__likes').textContent = picture.likes; // Устанавливаем количество лайков
 
-        return pictureTemplateClone;
+        return image;
 
       }
 
