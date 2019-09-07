@@ -199,11 +199,9 @@ function renderPage() {
         // Заполнение картинки данными из объекта
 
         image.setAttribute('data-number', index);
-        var pictureImg = image.querySelector('.picture__img');
-        pictureImg.src = picture.url; // Устанавливаем картинку
-
         image.querySelector('.picture__comments').textContent = picture.comments.length; // Устанавливаем количество комментариев
         image.querySelector('.picture__likes').textContent = picture.likes; // Устанавливаем количество лайков
+        image.querySelector('.picture__img').src = picture.url; // Устанавливаем картинку
 
         return image;
 
