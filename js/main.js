@@ -125,7 +125,7 @@ function hideDOMElement(element) {
 
 function getNumberOfPicture(picture) {
 
-  return picture.dataset.number;
+  return picture.querySelector('.picture__img').dataset.number;
 
 }
 
@@ -216,7 +216,8 @@ function renderPage() {
 
         function onPictureClick(evt) {
 
-          drawBigPicture(getNumberOfPicture(evt.target));
+          console.log(evt.currentTarget)
+          drawBigPicture(getNumberOfPicture(evt.currentTarget));
 
         }
 
@@ -224,7 +225,8 @@ function renderPage() {
 
           if (evt.key === 'Enter') {
             evt.preventDefault();
-            drawBigPicture(getNumberOfPicture(evt.target.querySelector('.picture__img')));
+            console.log(evt.currentTarget)
+            drawBigPicture(getNumberOfPicture(evt.currentTarget));
           }
 
         }
