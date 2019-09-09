@@ -8,6 +8,7 @@ var MAX_AVATAR_NUMBER = 7;
 var PHOTOS_COUNT = 25;
 var AVATAR_WIDTH = 35;
 var AVATAR_HEIGHT = 35;
+var MAX_FILTER_VALUE = 100;
 
 var peopleNames = [
   'Абрам',
@@ -58,42 +59,42 @@ var filters = {
     effectName: 'chrome',
     filterName: 'grayscale',
     minLevel: 0,
-    maxLefel: 1,
+    maxLevel: 1,
     measure: ''
   },
   sepia: {
     effectName: 'sepia',
     filterName: 'sepia',
     minLevel: 0,
-    maxLefel: 1,
+    maxLevel: 1,
     measure: ''
   },
   marvin: {
     effectName: 'marvin',
     filterName: 'invert',
     minLevel: 0,
-    maxLefel: 100,
+    maxLevel: 100,
     measure: '%'
   },
   phobos: {
     effectName: 'phobos',
     filterName: 'blur',
     minLevel: 0,
-    maxLefel: 3,
+    maxLevel: 3,
     measure: 'px'
   },
   heat: {
     effectName: 'heat',
     filterName: 'brightness',
     minLevel: 1,
-    maxLefel: 3,
+    maxLevel: 3,
     measure: ''
   },
   none: {
     effectName: 'none',
     filterName: 'none',
     minLevel: null,
-    maxLefel: null,
+    maxLevel: null,
     measure: ''
   },
 
@@ -385,9 +386,11 @@ function drawImageEditor() {
   var overlay = document.querySelector('.img-upload__overlay');
   var cancelButton = document.querySelector('#upload-cancel');
   var effectLevel = document.querySelector('.img-upload__effect-level');
+  var effectLevelLine = document.querySelector('.effect-level__line');
   var pin = document.querySelector('.effect-level__pin');
   var filterDepth = document.querySelector('.effect-level__depth');
-  var currentFilter = '';
+  var effectLevelInput = document.querySelector('.effect-level__value');
+  var currentFilter = {};
 
   hideEffectLevel();
   showImageEditor();
@@ -449,7 +452,7 @@ function drawImageEditor() {
     function useFilter(filter) {
 
       currentFilter = filters[filter];
-      setPinStartPosition();
+      setFilterValues(MAX_FILTER_VALUE);
 
       if (currentFilter.effectName === 'none') {
         hideEffectLevel();
@@ -459,10 +462,75 @@ function drawImageEditor() {
 
       image.className = 'effects__preview--' + currentFilter.effectName;
 
-      function setPinStartPosition() {
+      pin.addEventListener('mousedown', function (evt) {
 
-        pin.style.left = '100%';
-        filterDepth.style.width = '100%';
+        evt.preventDefault();
+
+        var START_PIN_POS = 0;
+        var FINISH_PIN_POS = effectLevelLine.clientWidth;
+
+        var startCoord = evt.clientX;
+        console.log(startCoord);
+
+        document.addEventListener('mousemove', onPinMouseMove);
+
+        function onPinMouseMove(moveEvt) {
+
+          moveEvt.preventDefault();
+
+          var shift = startCoord - moveEvt.clientX;
+          var pinPos = pin.offsetLeft - shift;
+
+          startCoord = moveEvt.clientX;
+
+          if (isInScope(pinPos)) {
+
+            var filterValue = getPinPositionInProportion(pinPos);
+
+            setFilterValues(filterValue);
+            setFilterDepth(filterValue);
+
+            document.addEventListener('mouseup', onPinMouseUp);
+          }
+
+          function onPinMouseUp(evt) {
+
+            evt.preventDefault();
+
+            document.removeEventListener('mousemove', onPinMouseMove);
+            document.removeEventListener('mouseup', onPinMouseUp);
+
+          }
+
+          function setFilterDepth(value) {
+
+            image.style.filter = currentFilter.filterName + '(' + value * currentFilter.maxLevel / 100 + currentFilter.measure + ')';
+
+          }
+
+        }
+
+        function getPinPositionInProportion(pos) {
+
+          console.log(pos)
+
+          return pos * 100 / FINISH_PIN_POS;
+
+        }
+
+        function isInScope(value) {
+
+          return value >= START_PIN_POS && value <= FINISH_PIN_POS;
+
+        }
+
+      });
+
+      function setFilterValues(value) {
+
+        pin.style.left = value + '%';
+        filterDepth.style.width = value + '%';
+        effectLevelInput.value = value;
 
       }
 
