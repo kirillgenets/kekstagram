@@ -159,7 +159,7 @@ function renderPage() {
         var commentsCount = generateRandomNumber(1, MAX_COMMENTS_COUNT);
         var commentsList = [];
 
-        for (var j = 0; j < commentsCount; i++) {
+        for (var j = 0; j < commentsCount; j++) {
 
           commentsList.push({
             avatar: 'img/avatar-' + generateRandomNumber(1, MAX_AVATAR_NUMBER) + '.svg',
