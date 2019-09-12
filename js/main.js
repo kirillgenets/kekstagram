@@ -382,14 +382,15 @@ function drawBigPicture(numberOfPicture) {
 
 function drawImageEditor() {
 
-  var image = document.querySelector('.img-upload__preview img');
-  var overlay = document.querySelector('.img-upload__overlay');
-  var cancelButton = document.querySelector('#upload-cancel');
-  var effectLevel = document.querySelector('.img-upload__effect-level');
-  var effectLevelLine = document.querySelector('.effect-level__line');
-  var pin = document.querySelector('.effect-level__pin');
-  var filterDepth = document.querySelector('.effect-level__depth');
-  var effectLevelInput = document.querySelector('.effect-level__value');
+  var form = document.querySelector('.img-upload__form')
+  var image = form.querySelector('.img-upload__preview img');
+  var overlay = form.querySelector('.img-upload__overlay');
+  var cancelButton = form.querySelector('#upload-cancel');
+  var effectLevel = form.querySelector('.img-upload__effect-level');
+  var effectLevelLine = form.querySelector('.effect-level__line');
+  var pin = form.querySelector('.effect-level__pin');
+  var filterDepth = form.querySelector('.effect-level__depth');
+  var effectLevelInput = form.querySelector('.effect-level__value');
   var currentFilter = {};
 
   var sliderWidth;
