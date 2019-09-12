@@ -150,17 +150,6 @@ function getNumberOfPicture(picture) {
 
 }
 
-function getCoords(element) {
-
-  var box = element.getBoundingClientRect(element);
-
-  return {
-    top: box.top + pageYOffset,
-    left: box.left + pageXOffset
-  };
-
-}
-
 /* ОСНОВНЫЕ ФУНКЦИИ */
 
 function renderPage() {
@@ -392,7 +381,7 @@ function openImageEditor() {
   var imageEditor = form.querySelector('.img-upload__overlay');
   var image = imageEditor.querySelector('.img-upload__preview img');
   var cancelButton = imageEditor.querySelector('#upload-cancel');
-  var effectsList = document.querySelector('.effects__list');
+  var effectsList = imageEditor.querySelector('.effects__list');
   var effectLevel = imageEditor.querySelector('.img-upload__effect-level');
   var effectLevelInput = effectLevel.querySelector('.effect-level__value');
   var effectLevelLine = effectLevel.querySelector('.effect-level__line');
@@ -413,8 +402,8 @@ function openImageEditor() {
 
   function initImageEditorListeners() {
 
-    document.addEventListener('keydown', onImageEditorCancelKeyDown);
     cancelButton.addEventListener('click', onImageEditorCancelButtonClick);
+    document.addEventListener('keydown', onImageEditorCancelKeyDown);
     effectsList.addEventListener('focus', onFilterFocus, true);
     pin.addEventListener('mousedown', onPinMouseDown);
 
@@ -452,7 +441,7 @@ function openImageEditor() {
 
     downEvt.preventDefault();
 
-    var effectLevelLineCoords = getCoords(effectLevelLine);
+    var effectLevelLineLeftCoord = getLeftCoord(effectLevelLine);
 
     document.addEventListener('mousemove', onPinMouseMove);
     document.addEventListener('mouseup', onPinMouseUp);
@@ -474,7 +463,7 @@ function openImageEditor() {
 
     function setFilterValues(evt) {
 
-      var pinLeft = evt.pageX - effectLevelLineCoords.left;
+      var pinLeft = evt.pageX - effectLevelLineLeftCoord;
       var maxLeft = effectLevelLine.offsetWidth;
 
       if (pinLeft < 0) {
@@ -495,6 +484,14 @@ function openImageEditor() {
       image.style.filter = currentFilter.filterName + '(' + depth + ')';
 
     }
+
+  }
+
+  function getLeftCoord(element) {
+
+    var box = element.getBoundingClientRect();
+
+    return box.left + pageXOffset;
 
   }
 
