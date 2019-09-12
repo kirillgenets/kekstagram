@@ -252,8 +252,8 @@ function renderPage() {
 function drawBigPicture(numberOfPicture) {
 
   var bigPicture = document.querySelector('.big-picture');
-  var cancelButton = document.querySelector('#picture-cancel');
-  var commentsContainer = document.querySelector('.social__comments');
+  var cancelButton = bigPicture.querySelector('#picture-cancel');
+  var commentsContainer = bigPicture.querySelector('.social__comments');
   var startIndexOfComment = 0;
 
   createBigPicture();
@@ -387,17 +387,16 @@ function drawBigPicture(numberOfPicture) {
 
 function openImageEditor() {
 
-  var uploadButton = document.querySelector('#upload-file');
-
   var form = document.querySelector('.img-upload__form');
-  var image = form.querySelector('.img-upload__preview img');
-  var overlay = form.querySelector('.img-upload__overlay');
-  var cancelButton = form.querySelector('#upload-cancel');
-  var effectLevel = form.querySelector('.img-upload__effect-level');
-  var effectLevelLine = form.querySelector('.effect-level__line');
-  var pin = form.querySelector('.effect-level__pin');
-  var filterDepth = form.querySelector('.effect-level__depth');
-  var effectLevelInput = form.querySelector('.effect-level__value');
+  var uploadButton = form.querySelector('#upload-file');
+  var imageEditor = form.querySelector('.img-upload__overlay');
+  var image = imageEditor.querySelector('.img-upload__preview img');
+  var cancelButton = imageEditor.querySelector('#upload-cancel');
+  var effectLevel = imageEditor.querySelector('.img-upload__effect-level');
+  var effectLevelInput = effectLevel.querySelector('.effect-level__value');
+  var effectLevelLine = effectLevel.querySelector('.effect-level__line');
+  var pin = effectLevelLine.querySelector('.effect-level__pin');
+  var filterDepth = effectLevelLine.querySelector('.effect-level__depth');
 
   var currentFilter = {};
 
@@ -405,7 +404,7 @@ function openImageEditor() {
 
   function onUploadButtonChange() {
 
-    overlay.classList.remove('hidden');
+    imageEditor.classList.remove('hidden');
     hideEffectLevel();
     initImageEditorListeners();
 
@@ -507,8 +506,8 @@ function openImageEditor() {
 
   function hideImageEditor() {
 
-    overlay.classList.add('hidden');
-    document.querySelector('#upload-file').value = '';
+    imageEditor.classList.add('hidden');
+    uploadButton.value = '';
     clearFilter();
 
     cancelButton.removeEventListener('click', onImageEditorCancelButtonClick);
