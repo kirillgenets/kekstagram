@@ -392,6 +392,7 @@ function openImageEditor() {
   var imageEditor = form.querySelector('.img-upload__overlay');
   var image = imageEditor.querySelector('.img-upload__preview img');
   var cancelButton = imageEditor.querySelector('#upload-cancel');
+  var effectsList = document.querySelector('.effects__list');
   var effectLevel = imageEditor.querySelector('.img-upload__effect-level');
   var effectLevelInput = effectLevel.querySelector('.effect-level__value');
   var effectLevelLine = effectLevel.querySelector('.effect-level__line');
@@ -412,9 +413,9 @@ function openImageEditor() {
 
   function initImageEditorListeners() {
 
-    cancelButton.addEventListener('click', onImageEditorCancelButtonClick);
     document.addEventListener('keydown', onImageEditorCancelKeyDown);
-    document.querySelector('.effects__list').addEventListener('focus', onFilterFocus, true);
+    cancelButton.addEventListener('click', onImageEditorCancelButtonClick);
+    effectsList.addEventListener('focus', onFilterFocus, true);
     pin.addEventListener('mousedown', onPinMouseDown);
 
     pin.ondragstart = function () {
