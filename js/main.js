@@ -497,8 +497,9 @@ function openImageEditor() {
 
   function clearFilter() {
 
-    image.classList.remove('effects__preview--' + currentFilter.effectName);
-    image.style.filter = '';
+    image.classList.remove('effects__preview--' + currentFilter.effectName)
+    image.style.filter = '';;
+    effectLevelInput.removeAttribute('value');
 
   }
 
