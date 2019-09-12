@@ -393,8 +393,6 @@ function drawImageEditor() {
   var effectLevelInput = form.querySelector('.effect-level__value');
   var currentFilter = {};
 
-  var sliderWidth;
-
   hideEffectLevel();
   showImageEditor();
 
@@ -443,6 +441,10 @@ function drawImageEditor() {
       document.addEventListener('mousemove', onPinMouseMove);
       document.addEventListener('mouseup', onPinMouseUp);
 
+      pin.ondragstart = function() {
+        return false;
+      }
+
       function onPinMouseMove(moveEvt) {
 
         setFilterValues(moveEvt);
@@ -469,11 +471,11 @@ function drawImageEditor() {
           pinPos = 0;
         }
 
-        if (pinPos > sliderWidth) {
-          pinPos = sliderWidth;
+        if (pinPos > effectLevelLine.offsetWidth) {
+          pinPos = effectLevelLine.offsetWidth;
         }
 
-        var filterValue = pinPos * 100 / sliderWidth;
+        var filterValue = pinPos * 100 / effectLevelLine.offsetWidth;
 
         pin.style.left = filterValue + '%';
         filterDepth.style.width = filterValue + '%';
@@ -518,8 +520,8 @@ function drawImageEditor() {
 
       image.className = 'effects__preview--' + currentFilter.effectName;
       image.style.filter =
-      pin.style.left = sliderWidth + 'px';
-      filterDepth.style.width = sliderWidth + 'px';
+      pin.style.left = effectLevelLine.offsetWidth + 'px';
+      filterDepth.style.width = effectLevelLine.offsetWidth + 'px';
       effectLevelInput.value = MAX_FILTER_VALUE;
 
     }
@@ -535,7 +537,6 @@ function drawImageEditor() {
   function showEffectLevel() {
 
     effectLevel.classList.remove('hidden');
-    sliderWidth = effectLevelLine.offsetWidth;
 
   }
 
