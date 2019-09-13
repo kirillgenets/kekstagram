@@ -9,6 +9,8 @@ var PHOTOS_COUNT = 25;
 var AVATAR_WIDTH = 35;
 var AVATAR_HEIGHT = 35;
 var MAX_FILTER_VALUE = 100;
+var MAX_HASHTAGS_NUMBER = 5;
+var MAX_HASHTAG_LENGTH = 20;
 
 var peopleNames = [
   'Абрам',
@@ -378,6 +380,7 @@ function openImageEditor() {
 
   var form = document.querySelector('.img-upload__form');
   var uploadButton = form.querySelector('#upload-file');
+  var hashTagInput = form.querySelector('.text__hashtags');
   var imageEditor = form.querySelector('.img-upload__overlay');
   var image = imageEditor.querySelector('.img-upload__preview img');
   var cancelButton = imageEditor.querySelector('#upload-cancel');
@@ -396,16 +399,19 @@ function openImageEditor() {
 
     imageEditor.classList.remove('hidden');
     hideEffectLevel();
-    initImageEditorListeners();
+    initFormListeners();
 
   }
 
-  function initImageEditorListeners() {
+  function initFormListeners() {
 
-    cancelButton.addEventListener('click', onImageEditorCancelButtonClick);
     document.addEventListener('keydown', onImageEditorCancelKeyDown);
+    cancelButton.addEventListener('click', onImageEditorCancelButtonClick);
     effectsList.addEventListener('focus', onFilterFocus, true);
     pin.addEventListener('mousedown', onPinMouseDown);
+    form.addEventListener('submit', onFormSubmit);
+    hashTagInput.addEventListener('change', onHashTagInputChange);
+
 
     pin.ondragstart = function () {
 
@@ -414,6 +420,84 @@ function openImageEditor() {
     };
 
   }
+
+  // Работа с формой
+
+  function onFormSubmit(evt) {
+
+    evt.preventDefault();
+
+  }
+
+  function onHashTagInputChange() {
+
+    console.log(getHashTagValidationErrors());
+
+  }
+
+  function getHashTagValidationErrors() {
+
+    var errorText = '';
+
+    var errors = {
+
+      noHash: {
+        errorMessage: 'Хэш-тег должен начинаться с символа "#"',
+        hasError: false
+      },
+      oneSymbol: {
+        errorMessage: 'Хэш-тег должен содержать текст после символа "#"',
+        hasError: false
+      },
+      separator: {
+        errorMessage: 'Хэш-теги должны разделяться пробелами',
+        hasError: false
+      },
+      sameHashTag: {
+        errorMessage: 'Хэш-теги не могут повторяться',
+        hasError: false
+      },
+      overageHashTags: {
+        errorMessage: 'Нельзя добавить более ' + MAX_HASHTAGS_NUMBER + ' хэш-тегов',
+        hasError: false
+      },
+      longHashTag: {
+        errorMessage: 'Хэш-тег не может быть длиннее ' + MAX_HASHTAG_LENGTH + ' символов',
+        hasError: false
+      },
+      overageHashTags: {
+        errorMessage: 'Хэш-тег должен начинаться с симовла "#"',
+        hasError: false
+      },
+
+    }
+
+    var hashTags = getHashTagsArray();
+
+    hashTags.forEach(function (hashTag) {
+      getSingleValidationErrors(hashTag);
+    });
+
+    function getSingleValidationErrors(hashTag) {
+
+      errors.noHash.hasError = errors.noHash.hasError || hashTag[0] === '#';
+      errors.oneSymbol.hasError = errors.oneSymbol.hasError || hashTag.length === 1;
+      errors.sameHashTag.hasError = errors.sameHashTag.hasError || hashTags.indexOf(hashTag) != -1;
+      errors.longHashTag.hasError = errors.longHashTag.hasError;
+
+    }
+
+    return errors;
+
+  }
+
+  function getHashTagsArray() {
+
+    return hashTagInput.value.split(' ');
+
+  }
+
+  // Работа с эффектами
 
   function onFilterFocus(evt) {
 
