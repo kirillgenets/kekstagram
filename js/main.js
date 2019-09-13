@@ -509,10 +509,10 @@ function openImageEditor() {
     uploadButton.value = '';
     clearFilter();
 
+    effectsList.removeEventListener('focus', onFilterFocus, true);
+    pin.removeEventListener('mousedown', onPinMouseDown);
     cancelButton.removeEventListener('click', onImageEditorCancelButtonClick);
     document.removeEventListener('keydown', onImageEditorCancelKeyDown);
-    document.querySelector('.effects__list').removeEventListener('focus', onFilterFocus, true);
-    pin.removeEventListener('mousedown', onPinMouseDown);
 
   }
 
