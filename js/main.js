@@ -440,54 +440,61 @@ function openImageEditor() {
     var errorText = '';
 
     var errors = {
+      noHash: false,
+      oneSymbol: false,
+      separator: false,
+      longHashTag: false,
+      sameHashTag: false,
+      overageHashTags: false,
+    };
 
-      noHash: {
-        errorMessage: 'Хэш-тег должен начинаться с символа "#"',
-        hasError: false
-      },
-      oneSymbol: {
-        errorMessage: 'Хэш-тег должен содержать текст после символа "#"',
-        hasError: false
-      },
-      separator: {
-        errorMessage: 'Хэш-теги должны разделяться пробелами',
-        hasError: false
-      },
-      sameHashTag: {
-        errorMessage: 'Хэш-теги не могут повторяться',
-        hasError: false
-      },
-      overageHashTags: {
-        errorMessage: 'Нельзя добавить более ' + MAX_HASHTAGS_NUMBER + ' хэш-тегов',
-        hasError: false
-      },
-      longHashTag: {
-        errorMessage: 'Хэш-тег не может быть длиннее ' + MAX_HASHTAG_LENGTH + ' символов',
-        hasError: false
-      },
-      overageHashTags: {
-        errorMessage: 'Хэш-тег должен начинаться с симовла "#"',
-        hasError: false
-      },
-
-    }
+    var errorMessages = {
+      noHash: 'Хэш-тег должен начинаться с символа "#"',
+      oneSymbol: 'Хэш-тег должен содержать текст после символа "#"',
+      separator: 'Хэш-теги должны разделяться пробелами',
+      longHashTag: 'Хэш-тег не может быть длиннее ' + MAX_HASHTAG_LENGTH + ' символов',
+      sameHashTag: 'Хэш-теги не могут повторяться',
+      overageHashTags: 'Нельзя добавить более ' + MAX_HASHTAGS_NUMBER + ' хэш-тегов',
+    };
 
     var hashTags = getHashTagsArray();
 
-    hashTags.forEach(function (hashTag) {
-      getSingleValidationErrors(hashTag);
-    });
+    hashTags.forEach(getSingleValidationErrors);
 
-    function getSingleValidationErrors(hashTag) {
+    errors.sameHashTag = errors.sameHashTag || getSameHashTags().length > 0;
 
-      errors.noHash.hasError = errors.noHash.hasError || hashTag[0] === '#';
-      errors.oneSymbol.hasError = errors.oneSymbol.hasError || hashTag.length === 1;
-      errors.sameHashTag.hasError = errors.sameHashTag.hasError || hashTags.indexOf(hashTag) != -1;
-      errors.longHashTag.hasError = errors.longHashTag.hasError;
+    for (var key in errors) {
+
+      if (errors[key] === true) {
+        errorText += errorMessages[key] + ' ';
+      }
 
     }
 
-    return errors;
+    return errorText;
+
+    function getSingleValidationErrors(hashTag) {
+
+      errors.noHash = errors.noHash || (hashTag[0] !== '#');
+      errors.oneSymbol = errors.oneSymbol || (hashTag[0] === '#' && (hashTag.length === 1));
+      errors.separator = errors.separator || (hashTag.includes('#', 1));
+      errors.longHashTag = errors.longHashTag || (hashTag.length > MAX_HASHTAG_LENGTH);
+
+    }
+
+    function getSameHashTags() {
+
+      var hashTagsCopy = Object.assign(hashTags);
+
+      return hashTags.filter(function (hashTag) {
+
+        hashTagsCopy.splice(hashTagsCopy.indexOf(hashTag), 1);
+
+        return hashTagsCopy.indexOf(hashTag) !== -1;
+
+      });
+
+    }
 
   }
 
