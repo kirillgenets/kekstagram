@@ -431,7 +431,7 @@ function openImageEditor() {
 
   function onHashTagInputChange() {
 
-    console.log(getHashTagValidationErrors());
+    hashTagInput.setCustomValidity(getHashTagValidationErrors());
 
   }
 
@@ -461,7 +461,8 @@ function openImageEditor() {
 
     hashTags.forEach(getSingleValidationErrors);
 
-    errors.sameHashTag = errors.sameHashTag || getSameHashTags().length > 0;
+    errors.sameHashTag = errors.sameHashTag || (getSameHashTags().length > 0);
+    errors.overageHashTags = errors.overageHashTags || (hashTags.length > MAX_HASHTAGS_NUMBER);
 
     for (var key in errors) {
 
@@ -484,15 +485,23 @@ function openImageEditor() {
 
     function getSameHashTags() {
 
-      var hashTagsCopy = Object.assign(hashTags);
+      var hashTagsCopy = Object.create(hashTags);
 
-      return hashTags.filter(function (hashTag) {
+      var sameHashTagsArray = hashTagsCopy.map(function (hashTag) {
 
-        hashTagsCopy.splice(hashTagsCopy.indexOf(hashTag), 1);
+        return hashTag.toLowerCase();
+
+      }).filter(function (hashTag) {
+
+        hashTagsCopy.splice(hashTags.indexOf(hashTag), 1);
 
         return hashTagsCopy.indexOf(hashTag) !== -1;
 
       });
+
+      console.log(sameHashTagsArray)
+
+      return sameHashTagsArray;
 
     }
 
@@ -500,7 +509,9 @@ function openImageEditor() {
 
   function getHashTagsArray() {
 
-    return hashTagInput.value.split(' ');
+    var hashTagsString = hashTagInput.value;
+
+    return hashTagsString.split(' ');
 
   }
 
