@@ -381,6 +381,7 @@ function openImageEditor() {
   var form = document.querySelector('.img-upload__form');
   var uploadButton = form.querySelector('#upload-file');
   var hashTagInput = form.querySelector('.text__hashtags');
+  var descriptionInput = form.querySelector('.text__description');
   var imageEditor = form.querySelector('.img-upload__overlay');
   var image = imageEditor.querySelector('.img-upload__preview img');
   var cancelButton = imageEditor.querySelector('#upload-cancel');
@@ -409,7 +410,6 @@ function openImageEditor() {
     cancelButton.addEventListener('click', onImageEditorCancelButtonClick);
     effectsList.addEventListener('focus', onFilterFocus, true);
     pin.addEventListener('mousedown', onPinMouseDown);
-    form.addEventListener('submit', onFormSubmit);
     hashTagInput.addEventListener('change', onHashTagInputChange);
 
 
@@ -423,15 +423,17 @@ function openImageEditor() {
 
   // Работа с формой
 
-  function onFormSubmit(evt) {
-
-    evt.preventDefault();
-
-  }
-
   function onHashTagInputChange() {
 
-    hashTagInput.setCustomValidity(getHashTagValidationErrors());
+    var inputErrors = getHashTagValidationErrors();
+
+    hashTagInput.setCustomValidity(inputErrors);
+
+    if (inputErrors) {
+      hashTagInput.style.borderColor = 'red';
+    } else {
+      hashTagInput.style.borderColor = '';
+    }
 
   }
 
@@ -493,13 +495,11 @@ function openImageEditor() {
 
       }).filter(function (hashTag) {
 
-        hashTagsCopy.splice(hashTags.indexOf(hashTag), 1);
+        hashTagsCopy.splice(hashTagsCopy.indexOf(hashTag), 1);
 
         return hashTagsCopy.indexOf(hashTag) !== -1;
 
       });
-
-      console.log(sameHashTagsArray)
 
       return sameHashTagsArray;
 
@@ -534,7 +534,13 @@ function openImageEditor() {
 
     if (evt.key === 'Escape') {
       evt.preventDefault();
-      hideImageEditor();
+
+      if (hashTagInput !== document.activeElement && descriptionInput !== document.activeElement) {
+
+        hideImageEditor();
+
+      }
+
     }
 
   }
@@ -610,6 +616,11 @@ function openImageEditor() {
     imageEditor.classList.add('hidden');
     uploadButton.value = '';
     clearFilter();
+
+    hashTagInput.setCustomValidity('');
+    hashTagInput.value = '';
+    hashTagInput.style.borderColor = '';
+    descriptionInput.value = '';
 
     effectsList.removeEventListener('focus', onFilterFocus, true);
     pin.removeEventListener('mousedown', onPinMouseDown);
