@@ -511,7 +511,9 @@ function openImageEditor() {
 
     var hashTagsString = hashTagInput.value;
 
-    return hashTagsString.split(' ');
+    return hashTagsString.split(' ').filter(function (hashTag) {
+      return hashTag.length > 0;
+    });
 
   }
 
