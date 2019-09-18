@@ -446,7 +446,7 @@ function openImageEditor() {
       overageHashTags: false,
     };
 
-    var errorMessages = {
+    var errorToMessage = {
       noHash: 'Хэш-тег должен начинаться с символа "#"',
       oneSymbol: 'Хэш-тег должен содержать текст после символа "#"',
       separator: 'Хэш-теги должны разделяться пробелами',
@@ -465,7 +465,7 @@ function openImageEditor() {
     for (var key in errors) {
 
       if (errors[key]) {
-        errorText += errorMessages[key] + ' ';
+        errorText += errorToMessage[key] + ' ';
       }
 
     }
