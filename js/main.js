@@ -464,7 +464,7 @@ function openImageEditor() {
 
     for (var key in errors) {
 
-      if (errors[key] === true) {
+      if (errors[key]) {
         errorText += errorMessages[key] + ' ';
       }
 
