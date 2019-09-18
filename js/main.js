@@ -429,11 +429,7 @@ function openImageEditor() {
 
     hashTagInput.setCustomValidity(inputErrors);
 
-    if (inputErrors) {
-      hashTagInput.style.borderColor = 'red';
-    } else {
-      hashTagInput.style.borderColor = '';
-    }
+    hashTagInput.style.borderColor = inputErrors ? 'red' : '';
 
   }
 
