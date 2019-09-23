@@ -7,7 +7,6 @@
   var MAX_HASHTAG_LENGTH = 20;
 
   var filters = {
-
     chrome: {
       effectName: 'chrome',
       filterName: 'grayscale',
@@ -49,8 +48,7 @@
       minLevel: null,
       maxLevel: null,
       measure: ''
-    },
-
+    }
   };
 
   var form = document.querySelector('.img-upload__form');
@@ -72,44 +70,31 @@
   uploadButton.addEventListener('change', onUploadButtonChange);
 
   function onUploadButtonChange() {
-
     imageEditor.classList.remove('hidden');
     hideEffectLevel();
     initFormListeners();
-
   }
 
   function initFormListeners() {
-
     document.addEventListener('keydown', onImageEditorCancelKeyDown);
     cancelButton.addEventListener('click', onImageEditorCancelButtonClick);
     effectsList.addEventListener('focus', onFilterFocus, true);
     pin.addEventListener('mousedown', onPinMouseDown);
     hashTagInput.addEventListener('change', onHashTagInputChange);
 
-
     pin.ondragstart = function () {
-
       return false;
-
     };
-
   }
 
-  // Работа с формой
-
   function onHashTagInputChange() {
-
     var inputErrors = getHashTagValidationErrors();
 
     hashTagInput.setCustomValidity(inputErrors);
-
     hashTagInput.style.borderColor = inputErrors ? 'red' : '';
-
   }
 
   function getHashTagValidationErrors() {
-
     var errorText = '';
 
     var errors = {
@@ -138,89 +123,64 @@
     errors.overageHashTags = errors.overageHashTags || (hashTags.length > MAX_HASHTAGS_NUMBER);
 
     for (var key in errors) {
-
       if (errors[key]) {
         errorText += errorToMessage[key] + ' ';
       }
-
     }
 
     return errorText;
 
     function getSingleValidationErrors(hashTag) {
-
       errors.noHash = errors.noHash || (hashTag[0] !== '#');
       errors.oneSymbol = errors.oneSymbol || (hashTag[0] === '#' && (hashTag.length === 1));
       errors.separator = errors.separator || (hashTag.includes('#', 1));
       errors.longHashTag = errors.longHashTag || (hashTag.length > MAX_HASHTAG_LENGTH);
-
     }
 
     function getSameHashTags() {
-
       var hashTagsCopy = Object.create(hashTags);
       var lowerCaseHashTagsArray = hashTagsCopy.map(function (hashTag) {
-
         return hashTag.toLowerCase();
-
       });
 
       var sameHashTagsArray = lowerCaseHashTagsArray.filter(function (hashTag) {
-
         hashTagsCopy.splice(lowerCaseHashTagsArray.indexOf(hashTag), 1);
 
         return lowerCaseHashTagsArray.indexOf(hashTag) !== -1;
-
       });
 
       return sameHashTagsArray;
-
     }
-
   }
 
   function getHashTagsArray() {
-
     var hashTagsString = hashTagInput.value;
 
     return hashTagsString.split(' ').filter(function (hashTag) {
       return hashTag.length > 0;
     });
-
   }
 
-  // Работа с эффектами
-
   function onFilterFocus(evt) {
-
     clearFilter();
     useFilter(evt.target.value);
-
   }
 
   function onImageEditorCancelButtonClick() {
-
     hideImageEditor();
-
   }
 
   function onImageEditorCancelKeyDown(evt) {
-
     if (window.utilities.isEscEvent(evt)) {
       evt.preventDefault();
 
       if (hashTagInput !== document.activeElement && descriptionInput !== document.activeElement) {
-
         hideImageEditor();
-
       }
-
     }
-
   }
 
   function onPinMouseDown(downEvt) {
-
     downEvt.preventDefault();
 
     var effectLevelLineLeftCoord = getLeftCoord(effectLevelLine);
@@ -229,22 +189,17 @@
     document.addEventListener('mouseup', onPinMouseUp);
 
     function onPinMouseMove(moveEvt) {
-
       setFilterValues(moveEvt);
-
     }
 
     function onPinMouseUp(upEvt) {
-
       setFilterValues(upEvt);
 
       document.removeEventListener('mousemove', onPinMouseMove);
       document.removeEventListener('mouseup', onPinMouseUp);
-
     }
 
     function setFilterValues(evt) {
-
       var pinLeft = evt.pageX - effectLevelLineLeftCoord;
       var maxLeft = effectLevelLine.offsetWidth;
 
@@ -264,29 +219,22 @@
       effectLevelInput.setAttribute('value', filterValue);
 
       image.style.filter = currentFilter.filterName + '(' + depth + ')';
-
     }
-
   }
 
   function getLeftCoord(element) {
-
     var box = element.getBoundingClientRect();
 
     return box.left + pageXOffset;
-
   }
 
   function clearFilter() {
-
     image.classList.remove('effects__preview--' + currentFilter.effectName);
     image.style.filter = '';
     effectLevelInput.removeAttribute('value');
-
   }
 
   function hideImageEditor() {
-
     imageEditor.classList.add('hidden');
     uploadButton.value = '';
     clearFilter();
@@ -300,11 +248,9 @@
     pin.removeEventListener('mousedown', onPinMouseDown);
     cancelButton.removeEventListener('click', onImageEditorCancelButtonClick);
     document.removeEventListener('keydown', onImageEditorCancelKeyDown);
-
   }
 
   function useFilter(filter) {
-
     var maxLeft = effectLevelLine.offsetWidth;
 
     currentFilter = filters[filter];
@@ -320,19 +266,14 @@
     pin.style.left = maxLeft + 'px';
     filterDepth.style.width = maxLeft + 'px';
     effectLevelInput.setAttribute('value', MAX_FILTER_VALUE);
-
   }
 
   function hideEffectLevel() {
-
     effectLevel.classList.add('visually-hidden');
-
   }
 
   function showEffectLevel() {
-
     effectLevel.classList.remove('visually-hidden');
-
   }
 
 })();
