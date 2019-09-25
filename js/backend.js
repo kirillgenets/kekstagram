@@ -1,4 +1,10 @@
+'use strict';
+
 (function () {
+
+  window.backend = {
+    getDataFromServer: getDataFromServer
+  }
 
   function getDataFromServer(onLoad, onError) {
     var dataRequest = new XMLHttpRequest();
@@ -13,12 +19,8 @@
         return
       }
 
-      dataRequest.status === 200 ? onLoad(dataRequest.responseText) : onError('Произошла ошибка при загрузке данных с сервера');
+      dataRequest.status === 200 ? onLoad(dataRequest.responseText) : onError('Ошибка при загрузке данных');
     }
-  }
-
-  window.backend = {
-    getDataFromServer: getDataFromServer
   }
 
 })();
