@@ -20,6 +20,26 @@
     errorTitle.textContent = errorMessage;
 
     main.appendChild(errorElement);
+
+    document.addEventListener('keydown', onErrorKeyDown);
+    errorElement.addEventListener('click', onErrorElementClick);
+
+    function onErrorKeyDown(evt) {
+      if (window.utilities.isEscEvent(evt)) {
+        closeErrorElement();
+      }
+    }
+
+    function onErrorElementClick() {
+      closeErrorElement();
+    }
+
+    function closeErrorElement() {
+      document.removeEventListener('keydown', onErrorKeyDown);
+      errorElement.removeEventListener('click', onErrorElementClick);
+      main.removeChild(errorElement);
+    }
+
   }
 
 })();

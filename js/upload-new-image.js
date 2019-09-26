@@ -81,10 +81,57 @@
     effectsList.addEventListener('focus', onFilterFocus, true);
     pin.addEventListener('mousedown', onPinMouseDown);
     hashTagInput.addEventListener('change', onHashTagInputChange);
+    form.addEventListener('submit', onFormSubmit);
 
     pin.ondragstart = function () {
       return false;
     };
+  }
+
+  function onFormSubmit(evt) {
+    evt.preventDefault();
+
+    var formData = new FormData(form);
+
+    window.backend.sendDataToServer(formData, onLoad, onError);
+
+    function onLoad() {
+      hideImageEditor();
+      form.reset();
+    }
+
+    function onError(errorMessage) {
+      var main = document.body.querySelector('main');
+      var errorTemplate = document.querySelector('#error').content.querySelector('.error');
+      var errorElement = errorTemplate.cloneNode(true);
+      var errorTitle = errorElement.querySelector('.error__title');
+
+      errorTitle.textContent = errorMessage;
+
+      main.appendChild(errorElement);
+
+      document.addEventListener('keydown', onErrorKeyDown);
+      errorElement.addEventListener('click', onErrorElementClick);
+
+      function onErrorKeyDown(downEvt) {
+        if (window.utilities.isEscEvent(downEvt)) {
+          closeErrorElement();
+        }
+      }
+
+      function onErrorElementClick() {
+        closeErrorElement();
+      }
+
+      function closeErrorElement() {
+        document.removeEventListener('keydown', onErrorKeyDown);
+        errorElement.removeEventListener('click', onErrorElementClick);
+        main.removeChild(errorElement);
+      }
+
+      hideImageEditor();
+      form.reset();
+    }
   }
 
   function onHashTagInputChange() {
@@ -144,7 +191,7 @@
       });
 
       var sameHashTagsArray = lowerCaseHashTagsArray.filter(function (hashTag) {
-        hashTagsCopy.splice(lowerCaseHashTagsArray.indexOf(hashTag), 1);
+        lowerCaseHashTagsArray.splice(lowerCaseHashTagsArray.indexOf(hashTag), 1);
 
         return lowerCaseHashTagsArray.indexOf(hashTag) !== -1;
       });
