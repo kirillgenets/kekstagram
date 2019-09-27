@@ -19,6 +19,8 @@
 
     smallPictures.forEach(initPicturesListeners);
 
+    window.filtrate();
+
     function createPicture(picture, index) {
       var image = pictureTemplate.cloneNode(true);
 
