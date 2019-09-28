@@ -6,7 +6,8 @@
 
   function onLoad(data) {
     window.data = JSON.parse(data);
-    window.drawAllPictures();
+    window.drawAllPictures(window.data);
+    window.filtrate();
   }
 
   function onError(errorMessage) {

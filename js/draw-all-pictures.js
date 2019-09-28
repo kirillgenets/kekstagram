@@ -4,12 +4,12 @@
 
   window.drawAllPictures = drawAllPictures;
 
-  function drawAllPictures() {
+  function drawAllPictures(data) {
     var pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
     var pictures = document.querySelector('.pictures');
     var picturesFragment = document.createDocumentFragment();
 
-    window.data.forEach(function (picture, index) {
+    data.forEach(function (picture, index) {
       picturesFragment.appendChild(createPicture(picture, index));
     });
 
@@ -18,8 +18,6 @@
     var smallPictures = document.querySelectorAll('.picture');
 
     smallPictures.forEach(initPicturesListeners);
-
-    window.filtrate();
 
     function createPicture(picture, index) {
       var image = pictureTemplate.cloneNode(true);
