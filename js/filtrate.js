@@ -12,7 +12,7 @@
       popular: window.data,
       new: getNewPicturesArray(),
       mostDiscussed: getMostDiscussedPicturesArray()
-    };
+    }
 
     var filtersElement = document.querySelector('.img-filters');
     var popularFilterButton = filtersElement.querySelector('#filter-popular');
@@ -34,10 +34,10 @@
 
     function onPopularFilterButtonClick() {
       if (!popularFilterButton.classList.contains('img-filters__button--active')) {
-        avoidDebounce(drawFilteredPictures, RENDERING_LIMIT);
+        avoidDebounce(drawFiltratedPictures, RENDERING_LIMIT);
       }
 
-      function drawFilteredPictures() {
+      function drawFiltratedPictures() {
         removePreviousFilter();
         window.drawAllPictures(filtratedPictures.popular);
         popularFilterButton.classList.add('img-filters__button--active');
@@ -46,10 +46,10 @@
 
     function onNewFilterButtonClick() {
       if (!newFilterButton.classList.contains('img-filters__button--active')) {
-        avoidDebounce(drawFilteredPictures, RENDERING_LIMIT);
+        avoidDebounce(drawFiltratedPictures, RENDERING_LIMIT);
       }
 
-      function drawFilteredPictures() {
+      function drawFiltratedPictures() {
         removePreviousFilter();
         window.drawAllPictures(filtratedPictures.new);
         newFilterButton.classList.add('img-filters__button--active');
@@ -58,10 +58,10 @@
 
     function onDiscussedFilterButtonClick() {
       if (!discussedFilterButton.classList.contains('img-filters__button--active')) {
-        avoidDebounce(drawFilteredPictures, RENDERING_LIMIT);
+        avoidDebounce(drawFiltratedPictures, RENDERING_LIMIT);
       }
 
-      function drawFilteredPictures() {
+      function drawFiltratedPictures() {
         removePreviousFilter();
         window.drawAllPictures(filtratedPictures.mostDiscussed);
         discussedFilterButton.classList.add('img-filters__button--active');
