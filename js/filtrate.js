@@ -12,7 +12,7 @@
       popular: window.data,
       new: getNewPicturesArray(),
       mostDiscussed: getMostDiscussedPicturesArray()
-    }
+    };
 
     var filtersElement = document.querySelector('.img-filters');
     var popularFilterButton = filtersElement.querySelector('#filter-popular');

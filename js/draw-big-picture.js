@@ -9,6 +9,9 @@
   var bigPicture = document.querySelector('.big-picture');
   var cancelButton = bigPicture.querySelector('#picture-cancel');
   var commentsContainer = bigPicture.querySelector('.social__comments');
+  var commentsCount = bigPicture.querySelector('.comments-count');
+  var shownCommentsCount = commentsCount.previousSibling;
+  var commentsLoader = bigPicture.querySelector('.comments-loader');
   var startIndexOfComment = 0;
 
   window.drawBigPicture = drawBigPicture;
@@ -18,13 +21,12 @@
     clearComments();
     renderComments();
     showBigPicture();
-    hideBigPictureExtraElements();
 
     function createBigPicture() {
       bigPicture.querySelector('.big-picture__img img').src = window.data[numberOfPicture].url;
       bigPicture.querySelector('.social__caption').textContent = window.data[numberOfPicture].description;
       bigPicture.querySelector('.likes-count').textContent = window.data[numberOfPicture].likes;
-      bigPicture.querySelector('.comments-count').textContent = window.data[numberOfPicture].comments.length;
+      commentsCount.textContent = window.data[numberOfPicture].comments.length;
     }
 
     function clearComments() {
@@ -42,6 +44,12 @@
 
       comments.slice(startIndexOfComment, endIndexOfComment).forEach(createComment);
       commentsContainer.appendChild(commentsFragment);
+      shownCommentsCount.textContent = endIndexOfComment + ' из ';
+
+      if (shownCommentsCount.textContent === commentsCount.textContent + ' из ') {
+        commentsLoader.classList.add('hidden');
+      }
+
       startIndexOfComment = endIndexOfComment;
 
       function createComment(commentObj) {
@@ -81,11 +89,17 @@
       function initBigPictureListeners() {
         cancelButton.addEventListener('click', onBigPictureCancelButtonClick);
         document.addEventListener('keydown', onBigPictureCancelKeyDown);
+        commentsLoader.addEventListener('click', onCommentsLoaderClick);
       }
 
       function removeBigPictureListeners() {
         cancelButton.removeEventListener('click', onBigPictureCancelButtonClick);
         document.removeEventListener('keydown', onBigPictureCancelKeyDown);
+        commentsLoader.removeEventListener('click', onCommentsLoaderClick);
+      }
+
+      function onCommentsLoaderClick() {
+        renderComments();
       }
 
       function onBigPictureCancelButtonClick() {
@@ -102,13 +116,9 @@
       }
     }
 
-    function hideBigPictureExtraElements() {
-      window.utilities.hideDOMElement(document.querySelector('.social__comment-count'));
-      window.utilities.hideDOMElement(document.querySelector('.comments-loader'));
-    }
-
     function hideBigPicture() {
       bigPicture.classList.add('hidden');
+      commentsLoader.classList.remove('hidden');
       startIndexOfComment = 0;
     }
 

@@ -2,10 +2,6 @@
 
 (function () {
 
-  function hideDOMElement(element) {
-    element.classList.add('visually-hidden');
-  }
-
   function isEnterEvent(evt) {
     return evt.key === 'Enter';
   }
@@ -15,7 +11,6 @@
   }
 
   window.utilities = {
-    hideDOMElement: hideDOMElement,
     isEnterEvent: isEnterEvent,
     isEscEvent: isEscEvent
   };
