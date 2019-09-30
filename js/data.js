@@ -13,32 +13,32 @@
   function onError(errorMessage) {
     var main = document.body.querySelector('main');
     var errorTemplate = document.querySelector('#error').content.querySelector('.error');
-    var errorElement = errorTemplate.cloneNode(true);
-    var errorTitle = errorElement.querySelector('.error__title');
-    var errorButtons = errorElement.querySelector('.error__buttons');
+    var errorModal = errorTemplate.cloneNode(true);
+    var errorTitle = errorModal.querySelector('.error__title');
+    var errorButtons = errorModal.querySelector('.error__buttons');
 
     errorButtons.style.display = 'none';
     errorTitle.textContent = errorMessage;
 
-    main.appendChild(errorElement);
+    main.appendChild(errorModal);
 
     document.addEventListener('keydown', onErrorKeyDown);
-    errorElement.addEventListener('click', onErrorElementClick);
+    errorModal.addEventListener('click', onErrorModalClick);
 
     function onErrorKeyDown(evt) {
       if (window.utilities.isEscEvent(evt)) {
-        closeErrorElement();
+        closeErrorModal();
       }
     }
 
-    function onErrorElementClick() {
-      closeErrorElement();
+    function onErrorModalClick() {
+      closeErrorModal();
     }
 
-    function closeErrorElement() {
+    function closeErrorModal() {
       document.removeEventListener('keydown', onErrorKeyDown);
-      errorElement.removeEventListener('click', onErrorElementClick);
-      main.removeChild(errorElement);
+      errorModal.removeEventListener('click', onErrorModalClick);
+      main.removeChild(errorModal);
     }
 
   }
