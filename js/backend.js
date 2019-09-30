@@ -9,6 +9,7 @@
 
   function getDataFromServer(onLoad, onError) {
     var dataRequest = new XMLHttpRequest();
+    dataRequest.responseType = 'json';
 
     dataRequest.open('GET', 'https://js.dump.academy/kekstagram/data');
     dataRequest.send();
@@ -17,7 +18,7 @@
     dataRequest.addEventListener('error', onDataRequestError);
 
     function onDataRequestLoad() {
-      onLoad(dataRequest.responseText);
+      onLoad(dataRequest.response);
     }
 
     function onDataRequestError() {

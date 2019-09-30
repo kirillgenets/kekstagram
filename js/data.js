@@ -5,7 +5,7 @@
   window.backend.getDataFromServer(onLoad, onError);
 
   function onLoad(data) {
-    window.data = JSON.parse(data);
+    window.data = data;
     window.drawAllPictures(window.data);
     window.filtrate();
   }
