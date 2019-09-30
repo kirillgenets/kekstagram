@@ -8,12 +8,6 @@
     var MAX_NEW_PICTURES_COUNT = 9;
     var RENDERING_LIMIT = 500;
 
-    var filtratedPictures = {
-      popular: window.data,
-      new: getNewPicturesArray(),
-      mostDiscussed: getMostDiscussedPicturesArray()
-    }
-
     var filtersElement = document.querySelector('.img-filters');
     var popularFilterButton = filtersElement.querySelector('#filter-popular');
     var newFilterButton = filtersElement.querySelector('#filter-new');
@@ -39,7 +33,7 @@
 
       function drawFiltratedPictures() {
         removePreviousFilter();
-        window.drawAllPictures(filtratedPictures.popular);
+        window.drawAllPictures(window.data);
         popularFilterButton.classList.add('img-filters__button--active');
       }
     }
@@ -51,7 +45,8 @@
 
       function drawFiltratedPictures() {
         removePreviousFilter();
-        window.drawAllPictures(filtratedPictures.new);
+        window.data = getNewPicturesArray();
+        window.drawAllPictures(window.data);
         newFilterButton.classList.add('img-filters__button--active');
       }
     }
@@ -63,7 +58,8 @@
 
       function drawFiltratedPictures() {
         removePreviousFilter();
-        window.drawAllPictures(filtratedPictures.mostDiscussed);
+        window.data = getMostDiscussedPicturesArray();
+        window.drawAllPictures(window.data);
         discussedFilterButton.classList.add('img-filters__button--active');
       }
     }
