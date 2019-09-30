@@ -12,10 +12,11 @@
     dataRequest.responseType = 'json';
 
     dataRequest.open('GET', 'https://js.dump.academy/kekstagram/data');
-    dataRequest.send();
 
     dataRequest.addEventListener('load', onDataRequestLoad);
     dataRequest.addEventListener('error', onDataRequestError);
+
+    dataRequest.send();
 
     function onDataRequestLoad() {
       onLoad(dataRequest.response);
@@ -30,10 +31,11 @@
     var dataRequest = new XMLHttpRequest();
 
     dataRequest.open('POST', 'https://js.dump.academy/kekstagram');
-    dataRequest.send();
 
     dataRequest.addEventListener('load', onDataRequestLoad);
     dataRequest.addEventListener('error', onDataRequestError);
+
+    dataRequest.send();
 
     function onDataRequestLoad() {
       onLoad();
