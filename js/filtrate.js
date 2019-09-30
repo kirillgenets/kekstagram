@@ -81,7 +81,7 @@
     function getMostDiscussedPicturesArray() {
       var mostDiscussedPicturesArray = window.data.slice();
       mostDiscussedPicturesArray.sort(function (current, next) {
-        return next.comments.length - current.comments.length;
+        return next.comments.length === current.comments.length ? next.likes - current.likes : next.comments.length - current.comments.length;
       });
 
       return mostDiscussedPicturesArray;
