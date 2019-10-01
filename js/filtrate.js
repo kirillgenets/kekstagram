@@ -5,7 +5,7 @@
   window.filtrate = filtrate;
 
   function filtrate() {
-    var MAX_NEW_PICTURES_COUNT = 9;
+    var MAX_NEW_PICTURES_COUNT = 10;
     var RENDERING_LIMIT = 500;
 
     var filtersElement = document.querySelector('.img-filters');
@@ -13,6 +13,8 @@
     var newFilterButton = filtersElement.querySelector('#filter-new');
     var discussedFilterButton = filtersElement.querySelector('#filter-discussed');
     var picturesContainer = document.querySelector('.pictures');
+
+    var defaultData = window.data;
 
     var renderingTimeout;
 
@@ -33,7 +35,7 @@
 
       function drawFiltratedPictures() {
         removePreviousFilter();
-        window.drawAllPictures(window.data);
+        window.drawAllPictures(defaultData);
         popularFilterButton.classList.add('img-filters__button--active');
       }
     }
@@ -65,21 +67,18 @@
     }
 
     function getNewPicturesArray() {
-      var newPicturesArray = [];
-
-      while (newPicturesArray.length <= MAX_NEW_PICTURES_COUNT) {
-        var randomNumber = Math.floor(Math.random() * (window.data.length - 1));
-
-        if (newPicturesArray.indexOf(window.data[randomNumber]) === -1) {
-          newPicturesArray.push(window.data[randomNumber]);
-        }
-      }
+      var newPicturesArray = defaultData.slice();
+      newPicturesArray.sort(randomizeOrder).splice(0, newPicturesArray.length - MAX_NEW_PICTURES_COUNT);
 
       return newPicturesArray;
+
+      function randomizeOrder() {
+        return 0.5 - Math.random();
+      }
     }
 
     function getMostDiscussedPicturesArray() {
-      var mostDiscussedPicturesArray = window.data.slice();
+      var mostDiscussedPicturesArray = defaultData.slice();
       mostDiscussedPicturesArray.sort(function (current, next) {
         return next.comments.length === current.comments.length ? next.likes - current.likes : next.comments.length - current.comments.length;
       });
