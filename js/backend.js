@@ -2,6 +2,8 @@
 
 (function () {
 
+  var MAX_LOADING_TIME = 5000;
+
   window.backend = {
     getDataFromServer: getDataFromServer,
     sendDataToServer: sendDataToServer
@@ -15,7 +17,9 @@
 
     dataRequest.addEventListener('load', onDataRequestLoad);
     dataRequest.addEventListener('error', onDataRequestError);
+    dataRequest.addEventListener('timeout', onDataRequestTimeout);
 
+    dataRequest.timeout = MAX_LOADING_TIME;
     dataRequest.send();
 
     function onDataRequestLoad() {
@@ -24,6 +28,10 @@
 
     function onDataRequestError() {
       onError('Ошибка при загрузке данных');
+    }
+
+    function onDataRequestTimeout() {
+      onError('Не удалось загрузить данные');
     }
   }
 
@@ -35,7 +43,9 @@
 
     dataRequest.addEventListener('load', onDataRequestLoad);
     dataRequest.addEventListener('error', onDataRequestError);
+    dataRequest.addEventListener('timeout', onDataRequestTimeout);
 
+    dataRequest.timeout = MAX_LOADING_TIME;
     dataRequest.send(data);
 
     function onDataRequestLoad() {
@@ -44,6 +54,10 @@
 
     function onDataRequestError() {
       onError('Ошибка при отправке данных');
+    }
+
+    function onDataRequestTimeout() {
+      onError('Не удалось отправить данные');
     }
   }
 
