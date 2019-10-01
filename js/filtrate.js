@@ -44,32 +44,6 @@
       window.drawAllPictures(window.data);
     }
 
-    function onNewFilterButtonClick() {
-      if (!newFilterButton.classList.contains('img-filters__button--active')) {
-        window.avoidDebounce(drawFiltratedPictures, RENDERING_LIMIT);
-      }
-
-      function drawFiltratedPictures() {
-        removePreviousFilter();
-        window.data = getNewPicturesArray();
-        window.drawAllPictures(window.data);
-        newFilterButton.classList.add('img-filters__button--active');
-      }
-    }
-
-    function onDiscussedFilterButtonClick() {
-      if (!discussedFilterButton.classList.contains('img-filters__button--active')) {
-        window.avoidDebounce(drawFiltratedPictures, RENDERING_LIMIT);
-      }
-
-      function drawFiltratedPictures() {
-        removePreviousFilter();
-        window.data = getMostDiscussedPicturesArray();
-        window.drawAllPictures(window.data);
-        discussedFilterButton.classList.add('img-filters__button--active');
-      }
-    }
-
     function getNewPicturesArray() {
       var newPicturesArray = defaultData.slice();
       newPicturesArray.sort(randomizeOrder).splice(0, newPicturesArray.length - MAX_NEW_PICTURES_COUNT);
