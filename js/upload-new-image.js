@@ -96,8 +96,33 @@
     window.backend.sendData(formData, onLoad, onError);
 
     function onLoad() {
+      var main = document.body.querySelector('main');
+      var successTemplate = document.querySelector('#success').content.querySelector('.success');
+      var successModal = successTemplate.cloneNode(true);
+
+      main.appendChild(successModal);
+
+      document.addEventListener('keydown', onSuccessKeyDown);
+      successModal.addEventListener('click', onSuccessModalClick);
+
       hideImageEditor();
       form.reset();
+
+      function onSuccessKeyDown(downEvt) {
+        if (window.utilities.isEscEvent(downEvt)) {
+          closeSuccessModal();
+        }
+      }
+
+      function onSuccessModalClick() {
+        closeSuccessModal();
+      }
+
+      function closeSuccessModal() {
+        document.removeEventListener('keydown', onSuccessKeyDown);
+        successModal.removeEventListener('click', onSuccessModalClick);
+        main.removeChild(successModal);
+      }
     }
 
     function onError(errorMessage) {
@@ -112,6 +137,9 @@
 
       document.addEventListener('keydown', onErrorKeyDown);
       errorModal.addEventListener('click', onErrorModalClick);
+
+      hideImageEditor();
+      form.reset();
 
       function onErrorKeyDown(downEvt) {
         if (window.utilities.isEscEvent(downEvt)) {
@@ -128,9 +156,6 @@
         errorModal.removeEventListener('click', onErrorModalClick);
         main.removeChild(errorModal);
       }
-
-      hideImageEditor();
-      form.reset();
     }
   }
 
