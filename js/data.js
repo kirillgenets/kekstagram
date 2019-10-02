@@ -2,7 +2,7 @@
 
 (function () {
 
-  window.backend.getDataFromServer(onLoad, onError);
+  window.backend.getData(onLoad, onError);
 
   function onLoad(data) {
     window.data = data;

@@ -2,28 +2,35 @@
 
 (function () {
 
-  var MAX_LOADING_TIME = 5000;
+  var MAX_LOADING_TIME = 10000;
+  var SUCCESS_STATUS = 200;
 
   window.backend = {
-    getDataFromServer: getDataFromServer,
-    sendDataToServer: sendDataToServer
+    getData: getData,
+    sendData: sendData
   };
 
-  function getDataFromServer(onLoad, onError) {
+  function getData(onLoad, onError) {
+    var GET_URL = 'https://js.dump.academy/kekstagram/data';
+
     var dataRequest = new XMLHttpRequest();
     dataRequest.responseType = 'json';
-
-    dataRequest.open('GET', 'https://js.dump.academy/kekstagram/data');
 
     dataRequest.addEventListener('load', onDataRequestLoad);
     dataRequest.addEventListener('error', onDataRequestError);
     dataRequest.addEventListener('timeout', onDataRequestTimeout);
 
     dataRequest.timeout = MAX_LOADING_TIME;
+
+    dataRequest.open('GET', GET_URL);
     dataRequest.send();
 
     function onDataRequestLoad() {
-      onLoad(dataRequest.response);
+      if (dataRequest.status === SUCCESS_STATUS) {
+        onLoad(dataRequest.response);
+      } else {
+        onError('Ошибка при загрузке данных: ' + dataRequest.status + ' ' + dataRequest.statusText);
+      }
     }
 
     function onDataRequestError() {
@@ -31,14 +38,14 @@
     }
 
     function onDataRequestTimeout() {
-      onError('Не удалось загрузить данные');
+      onError('Не удалось загрузить данные за' + dataRequest.timeout + ' мс');
     }
   }
 
-  function sendDataToServer(data, onLoad, onError) {
-    var dataRequest = new XMLHttpRequest();
+  function sendData(data, onLoad, onError) {
+    var POST_URL = 'https://js.dump.academy/kekstagram';
 
-    dataRequest.open('POST', 'https://js.dump.academy/kekstagram');
+    var dataRequest = new XMLHttpRequest();
     dataRequest.responseType = 'json';
 
     dataRequest.addEventListener('load', onDataRequestLoad);
@@ -46,18 +53,25 @@
     dataRequest.addEventListener('timeout', onDataRequestTimeout);
 
     dataRequest.timeout = MAX_LOADING_TIME;
+
+    dataRequest.open('POST', POST_URL);
     dataRequest.send(data);
 
     function onDataRequestLoad() {
-      onLoad();
+      if (dataRequest.status === SUCCESS_STATUS) {
+        onLoad();
+      } else {
+        onError('Ошибка при отправке данных: ' + dataRequest.status + ' ' + dataRequest.statusText);
+      }
     }
+
 
     function onDataRequestError() {
       onError('Ошибка при отправке данных');
     }
 
     function onDataRequestTimeout() {
-      onError('Не удалось отправить данные');
+      onError('Не удалось отправить данные за' + dataRequest.timeout + ' мс');
     }
   }
 

@@ -6,7 +6,6 @@
 
   function filtrate() {
     var MAX_NEW_PICTURES_COUNT = 10;
-    var RENDERING_LIMIT = 500;
 
     var filters = document.querySelector('.img-filters');
     var allFilterButtons = document.querySelectorAll('.img-filters__button');
@@ -35,7 +34,7 @@
         }
 
         removePreviousFilter();
-        window.avoidDebounce(drawFiltratedPictures, RENDERING_LIMIT);
+        window.avoidDebounce(drawFiltratedPictures);
         filterButton.classList.add('img-filters__button--active');
       }
     }

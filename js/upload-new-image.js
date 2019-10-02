@@ -93,7 +93,7 @@
 
     var formData = new FormData(form);
 
-    window.backend.sendDataToServer(formData, onLoad, onError);
+    window.backend.sendData(formData, onLoad, onError);
 
     function onLoad() {
       hideImageEditor();
