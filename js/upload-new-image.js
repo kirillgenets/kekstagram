@@ -5,6 +5,7 @@
   var MAX_FILTER_VALUE = 100;
   var MAX_HASHTAGS_NUMBER = 5;
   var MAX_HASHTAG_LENGTH = 20;
+  var MODAL_Z_INDEX = 3;
 
   var filters = {
     chrome: {
@@ -130,24 +131,30 @@
       var errorTemplate = document.querySelector('#error').content.querySelector('.error');
       var errorModal = errorTemplate.cloneNode(true);
       var errorTitle = errorModal.querySelector('.error__title');
+      var tryAgainButton = errorModal.querySelector('.error__button:first-child');
 
+      errorModal.style.zIndex = MODAL_Z_INDEX;
       errorTitle.textContent = errorMessage;
 
       main.appendChild(errorModal);
 
       document.addEventListener('keydown', onErrorKeyDown);
       errorModal.addEventListener('click', onErrorModalClick);
+      tryAgainButton.addEventListener('click', onTryAgainButtonClick);
 
-      hideImageEditor();
-      form.reset();
+      function onTryAgainButtonClick() {
+        closeErrorModal();
+      }
 
       function onErrorKeyDown(downEvt) {
         if (window.utilities.isEscEvent(downEvt)) {
+          hideImageEditor();
           closeErrorModal();
         }
       }
 
       function onErrorModalClick() {
+        hideImageEditor();
         closeErrorModal();
       }
 
