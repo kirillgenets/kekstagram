@@ -6,6 +6,11 @@
   var MAX_HASHTAGS_NUMBER = 5;
   var MAX_HASHTAG_LENGTH = 20;
   var MODAL_Z_INDEX = 3;
+  var AVAILABLE_IMAGE_FORMATS = ['jpg', 'jp2', 'jpeg', 'gif', 'png'];
+  var WRONG_FILE_TYPE_ERROR_MESSAGE = 'Я умею загружать только изображения!';
+  var MAX_SCALE_VALUE = 100;
+  var MIN_SCALE_VALUE = 25;
+  var CHANGE_SCALE_VALUE_STEP = 25;
 
   var filters = {
     chrome: {
@@ -57,6 +62,9 @@
   var hashTagInput = form.querySelector('.text__hashtags');
   var descriptionInput = form.querySelector('.text__description');
   var imageEditor = form.querySelector('.img-upload__overlay');
+  var scaleButtonSmaller = imageEditor.querySelector('.scale__control--smaller');
+  var scaleButtonBigger = imageEditor.querySelector('.scale__control--bigger');
+  var scaleValue = imageEditor.querySelector('.scale__control--value');
   var image = imageEditor.querySelector('.img-upload__preview img');
   var cancelButton = imageEditor.querySelector('#upload-cancel');
   var effectsList = imageEditor.querySelector('.effects__list');
@@ -71,7 +79,30 @@
   uploadButton.addEventListener('change', onUploadButtonChange);
 
   function onUploadButtonChange() {
+    var file = uploadButton.files[0];
+    var fileName = file.name.toLowerCase();
+
+    var isMatches = AVAILABLE_IMAGE_FORMATS.some(function (format) {
+      return fileName.endsWith(format);
+    });
+
+    if (isMatches) {
+      var fileReader = new FileReader();
+
+      fileReader.addEventListener('load', function () {
+        image.src = fileReader.result;
+        showImageEditor();
+      });
+
+      fileReader.readAsDataURL(file);
+    } else {
+      onError(WRONG_FILE_TYPE_ERROR_MESSAGE);
+    }
+  }
+
+  function showImageEditor() {
     imageEditor.classList.remove('hidden');
+    changeImageScale(MAX_SCALE_VALUE);
     hideEffectLevel();
     initFormListeners();
   }
@@ -79,6 +110,8 @@
   function initFormListeners() {
     document.addEventListener('keydown', onImageEditorCancelKeyDown);
     cancelButton.addEventListener('click', onImageEditorCancelButtonClick);
+    scaleButtonSmaller.addEventListener('click', onScaleButtonSmallerClick);
+    scaleButtonBigger.addEventListener('click', onScaleButtonBiggerClick);
     effectsList.addEventListener('focus', onFilterFocus, true);
     pin.addEventListener('mousedown', onPinMouseDown);
     hashTagInput.addEventListener('change', onHashTagInputChange);
@@ -87,6 +120,29 @@
     pin.ondragstart = function () {
       return false;
     };
+  }
+
+  function onScaleButtonSmallerClick() {
+    var scaleValueNumber = +scaleValue.value.slice(0, -1);
+    var newValue = scaleValueNumber - CHANGE_SCALE_VALUE_STEP;
+
+    if (scaleValueNumber > MIN_SCALE_VALUE) {
+      changeImageScale(newValue);
+    }
+  }
+
+  function onScaleButtonBiggerClick() {
+    var scaleValueNumber = +scaleValue.value.slice(0, -1);
+    var newValue = scaleValueNumber + CHANGE_SCALE_VALUE_STEP;
+
+    if (scaleValueNumber < MAX_SCALE_VALUE) {
+      changeImageScale(newValue);
+    }
+  }
+
+  function changeImageScale(value) {
+    scaleValue.value = value + '%';
+    image.style.transform = 'scale(' + value / MAX_SCALE_VALUE + ')';
   }
 
   function onFormSubmit(evt) {
@@ -125,44 +181,45 @@
         main.removeChild(successModal);
       }
     }
+  }
 
-    function onError(errorMessage) {
-      var main = document.body.querySelector('main');
-      var errorTemplate = document.querySelector('#error').content.querySelector('.error');
-      var errorModal = errorTemplate.cloneNode(true);
-      var errorTitle = errorModal.querySelector('.error__title');
-      var tryAgainButton = errorModal.querySelector('.error__button:first-child');
+  function onError(errorMessage) {
+    var main = document.body.querySelector('main');
+    var errorTemplate = document.querySelector('#error').content.querySelector('.error');
+    var errorModal = errorTemplate.cloneNode(true);
+    var errorTitle = errorModal.querySelector('.error__title');
+    var tryAgainButton = errorModal.querySelector('.error__button:first-child');
 
-      errorModal.style.zIndex = MODAL_Z_INDEX;
-      errorTitle.textContent = errorMessage;
+    errorModal.style.zIndex = MODAL_Z_INDEX;
+    errorTitle.textContent = errorMessage;
 
-      main.appendChild(errorModal);
+    errorMessage === WRONG_FILE_TYPE_ERROR_MESSAGE ? tryAgainButton.classList.add('hidden') : tryAgainButton.addEventListener('click', onTryAgainButtonClick);;
 
-      document.addEventListener('keydown', onErrorKeyDown);
-      errorModal.addEventListener('click', onErrorModalClick);
-      tryAgainButton.addEventListener('click', onTryAgainButtonClick);
+    main.appendChild(errorModal);
 
-      function onTryAgainButtonClick() {
-        closeErrorModal();
-      }
+    document.addEventListener('keydown', onErrorKeyDown);
+    errorModal.addEventListener('click', onErrorModalClick);
 
-      function onErrorKeyDown(downEvt) {
-        if (window.utilities.isEscEvent(downEvt)) {
-          hideImageEditor();
-          closeErrorModal();
-        }
-      }
+    function onTryAgainButtonClick() {
+      closeErrorModal();
+    }
 
-      function onErrorModalClick() {
+    function onErrorKeyDown(downEvt) {
+      if (window.utilities.isEscEvent(downEvt)) {
         hideImageEditor();
         closeErrorModal();
       }
+    }
 
-      function closeErrorModal() {
-        document.removeEventListener('keydown', onErrorKeyDown);
-        errorModal.removeEventListener('click', onErrorModalClick);
-        main.removeChild(errorModal);
-      }
+    function onErrorModalClick() {
+      hideImageEditor();
+      closeErrorModal();
+    }
+
+    function closeErrorModal() {
+      document.removeEventListener('keydown', onErrorKeyDown);
+      errorModal.removeEventListener('click', onErrorModalClick);
+      main.removeChild(errorModal);
     }
   }
 
