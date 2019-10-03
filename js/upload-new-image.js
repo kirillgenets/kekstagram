@@ -193,7 +193,11 @@
     errorModal.style.zIndex = MODAL_Z_INDEX;
     errorTitle.textContent = errorMessage;
 
-    errorMessage === WRONG_FILE_TYPE_ERROR_MESSAGE ? tryAgainButton.classList.add('hidden') : tryAgainButton.addEventListener('click', onTryAgainButtonClick);;
+    if (errorMessage === WRONG_FILE_TYPE_ERROR_MESSAGE) {
+      tryAgainButton.classList.add('hidden');
+    } else {
+      tryAgainButton.addEventListener('click', onTryAgainButtonClick);
+    }
 
     main.appendChild(errorModal);
 
