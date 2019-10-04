@@ -2,17 +2,21 @@
 
 (function () {
 
-  function isEnterEvent(evt) {
-    return evt.key === 'Enter';
-  }
-
-  function isEscEvent(evt) {
-    return evt.key === 'Escape';
-  }
-
   window.utilities = {
     isEnterEvent: isEnterEvent,
     isEscEvent: isEscEvent
   };
+
+  function isEnterEvent(evt, callback) {
+    if (evt.key === 'Enter') {
+      callback(evt);
+    }
+  }
+
+  function isEscEvent(evt, callback) {
+    if (evt.key === 'Escape') {
+      callback(evt);
+    }
+  }
 
 })();

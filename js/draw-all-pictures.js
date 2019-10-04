@@ -6,31 +6,31 @@
 
   function drawAllPictures(data) {
     var pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
-    var pictures = document.querySelector('.pictures');
+    var picturesContainer = document.querySelector('.pictures');
     var picturesFragment = document.createDocumentFragment();
 
     data.forEach(function (picture, index) {
       picturesFragment.appendChild(createPicture(picture, index));
     });
 
-    pictures.appendChild(picturesFragment);
+    picturesContainer.appendChild(picturesFragment);
 
-    var smallPictures = document.querySelectorAll('.picture');
+    var allSmallPictures = document.querySelectorAll('.picture');
 
-    smallPictures.forEach(initPicturesListeners);
+    allSmallPictures.forEach(initSmallPicturesListeners);
 
     function createPicture(picture, index) {
       var image = pictureTemplate.cloneNode(true);
 
       image.setAttribute('data-number', index);
-      image.querySelector('.picture__comments').textContent = picture.comments.length; // Устанавливаем количество комментариев
-      image.querySelector('.picture__likes').textContent = picture.likes; // Устанавливаем количество лайков
-      image.querySelector('.picture__img').src = picture.url; // Устанавливаем картинку
+      image.querySelector('.picture__comments').textContent = picture.comments.length;
+      image.querySelector('.picture__likes').textContent = picture.likes;
+      image.querySelector('.picture__img').src = picture.url;
 
       return image;
     }
 
-    function initPicturesListeners(picture) {
+    function initSmallPicturesListeners(picture) {
       picture.addEventListener('click', onPictureClick);
       picture.addEventListener('keydown', onPictureKeyDown);
 
@@ -39,10 +39,10 @@
       }
 
       function onPictureKeyDown(evt) {
-        if (window.utilities.isEnterEvent(evt)) {
+        window.utilities.isEnterEvent(evt, function (evt) {
           evt.preventDefault();
           window.drawBigPicture(evt.currentTarget.dataset.number);
-        }
+        })
       }
     }
   }

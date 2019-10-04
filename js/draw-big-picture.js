@@ -84,6 +84,7 @@
 
     function showBigPicture() {
       bigPicture.classList.remove('hidden');
+      document.body.classList.add('modal-open');
       initBigPictureListeners();
 
       function initBigPictureListeners() {
@@ -108,16 +109,17 @@
       }
 
       function onBigPictureCancelKeyDown(evt) {
-        if (window.utilities.isEscEvent(evt)) {
+        window.utilities.isEscEvent(evt, function(evt) {
           evt.preventDefault();
           hideBigPicture();
           removeBigPictureListeners();
-        }
+        });
       }
     }
 
     function hideBigPicture() {
       bigPicture.classList.add('hidden');
+      document.body.classList.remove('modal-open');
       commentsLoader.classList.remove('hidden');
       startIndexOfComment = 0;
     }

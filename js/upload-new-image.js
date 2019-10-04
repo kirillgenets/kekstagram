@@ -12,7 +12,7 @@
   var MIN_SCALE_VALUE = 25;
   var CHANGE_SCALE_VALUE_STEP = 25;
 
-  var filters = {
+  var FILTERS = {
     chrome: {
       effectName: 'chrome',
       filterName: 'grayscale',
@@ -166,9 +166,10 @@
       form.reset();
 
       function onSuccessKeyDown(downEvt) {
-        if (window.utilities.isEscEvent(downEvt)) {
+        window.utilities.isEscEvent(downEvt, function (evt) {
+          evt.preventDefault();
           closeSuccessModal();
-        }
+        });
       }
 
       function onSuccessModalClick() {
@@ -209,10 +210,11 @@
     }
 
     function onErrorKeyDown(downEvt) {
-      if (window.utilities.isEscEvent(downEvt)) {
+      window.utilities.isEscEvent(downEvt, function (evt) {
+        evt.preventDefault();
         hideImageEditor();
         closeErrorModal();
-      }
+      });
     }
 
     function onErrorModalClick() {
@@ -223,6 +225,7 @@
     function closeErrorModal() {
       document.removeEventListener('keydown', onErrorKeyDown);
       errorModal.removeEventListener('click', onErrorModalClick);
+      tryAgainButton.removeEventListener('click', onTryAgainButtonClick);
       main.removeChild(errorModal);
     }
   }
@@ -311,13 +314,13 @@
   }
 
   function onImageEditorCancelKeyDown(evt) {
-    if (window.utilities.isEscEvent(evt)) {
+    window.utilities.isEscEvent(evt, function (evt) {
       evt.preventDefault();
 
       if (hashTagInput !== document.activeElement && descriptionInput !== document.activeElement) {
         hideImageEditor();
       }
-    }
+    });
   }
 
   function onPinMouseDown(downEvt) {
@@ -388,12 +391,16 @@
     pin.removeEventListener('mousedown', onPinMouseDown);
     cancelButton.removeEventListener('click', onImageEditorCancelButtonClick);
     document.removeEventListener('keydown', onImageEditorCancelKeyDown);
+    scaleButtonSmaller.removeEventListener('click', onScaleButtonSmallerClick);
+    scaleButtonBigger.removeEventListener('click', onScaleButtonBiggerClick);
+    hashTagInput.removeEventListener('change', onHashTagInputChange);
+    form.removeEventListener('submit', onFormSubmit);
   }
 
   function useFilter(filter) {
     var maxLeft = effectLevelLine.offsetWidth;
 
-    currentFilter = filters[filter];
+    currentFilter = FILTERS[filter];
 
     if (currentFilter.effectName === 'none') {
       hideEffectLevel();

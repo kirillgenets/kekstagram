@@ -2,13 +2,13 @@
 
 (function () {
 
+  var MAX_NEW_PICTURES_COUNT = 10;
   window.filtrate = filtrate;
 
   function filtrate() {
-    var MAX_NEW_PICTURES_COUNT = 10;
 
     var filters = document.querySelector('.img-filters');
-    var allFilterButtons = document.querySelectorAll('.img-filters__button');
+    var allFilterButtons = filters.querySelectorAll('.img-filters__button');
     var picturesContainer = document.querySelector('.pictures');
 
     var defaultData = window.data;
