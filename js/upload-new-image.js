@@ -263,7 +263,7 @@
 
     hashTags.forEach(getSingleValidationErrors);
 
-    errors.sameHashTag = errors.sameHashTag || (getSameHashTags().length > 0);
+    errors.sameHashTag = errors.sameHashTag || getSameHashTagsError();
     errors.overageHashTags = errors.overageHashTags || (hashTags.length > MAX_HASHTAGS_NUMBER);
 
     for (var key in errors) {
@@ -281,19 +281,14 @@
       errors.longHashTag = errors.longHashTag || (hashTag.length > MAX_HASHTAG_LENGTH);
     }
 
-    function getSameHashTags() {
-      var hashTagsCopy = Object.create(hashTags);
-      var lowerCaseHashTagsArray = hashTagsCopy.map(function (hashTag) {
-        return hashTag.toLowerCase();
+    function getSameHashTagsError() {
+      var hashTagsSet = new Set();
+
+      hashTags.forEach(function (hashTag) {
+        hashTagsSet.add(hashTag.toLowerCase());
       });
 
-      var sameHashTagsArray = lowerCaseHashTagsArray.filter(function (hashTag) {
-        lowerCaseHashTagsArray.splice(lowerCaseHashTagsArray.indexOf(hashTag), 1);
-
-        return lowerCaseHashTagsArray.indexOf(hashTag) !== -1;
-      });
-
-      return sameHashTagsArray;
+      return hashTagsSet.size !== hashTags.length;
     }
   }
 

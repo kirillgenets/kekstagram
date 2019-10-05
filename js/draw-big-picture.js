@@ -29,10 +29,6 @@
       commentsCount.textContent = window.data[numberOfPicture].comments.length;
     }
 
-    function clearComments() {
-      commentsContainer.innerHTML = '';
-    }
-
     function renderComments() {
       var comments = window.data[numberOfPicture].comments;
       var endIndexOfComment = startIndexOfComment + SHOWN_COMMENTS_STEP;
@@ -116,14 +112,17 @@
         });
       }
     }
+  }
 
-    function hideBigPicture() {
-      bigPicture.classList.add('hidden');
-      document.body.classList.remove('modal-open');
-      commentsLoader.classList.remove('hidden');
-      startIndexOfComment = 0;
-    }
+  function clearComments() {
+    commentsContainer.innerHTML = '';
+  }
 
+  function hideBigPicture() {
+    bigPicture.classList.add('hidden');
+    document.body.classList.remove('modal-open');
+    commentsLoader.classList.remove('hidden');
+    startIndexOfComment = 0;
   }
 
 })();

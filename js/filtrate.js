@@ -3,14 +3,14 @@
 (function () {
 
   var MAX_NEW_PICTURES_COUNT = 10;
+
+  var filtersContainer = document.querySelector('.img-filters');
+  var allFilterButtons = filtersContainer.querySelectorAll('.img-filters__button');
+  var picturesContainer = document.querySelector('.pictures');
+
   window.filtrate = filtrate;
 
   function filtrate() {
-
-    var filtersContainer = document.querySelector('.img-filters');
-    var allFilterButtons = filtersContainer.querySelectorAll('.img-filters__button');
-    var picturesContainer = document.querySelector('.pictures');
-
     var defaultData = window.data;
 
     filtersContainer.classList.remove('img-filters--inactive');
