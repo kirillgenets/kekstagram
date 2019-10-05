@@ -38,11 +38,11 @@
         window.drawBigPicture(evt.currentTarget.dataset.number);
       }
 
-      function onPictureKeyDown(evt) {
-        window.utilities.isEnterEvent(evt, function (evt) {
+      function onPictureKeyDown(downEvt) {
+        window.utilities.isEnterEvent(downEvt, function (evt) {
           evt.preventDefault();
           window.drawBigPicture(evt.currentTarget.dataset.number);
-        })
+        });
       }
     }
   }

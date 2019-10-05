@@ -25,11 +25,11 @@
     document.addEventListener('keydown', onErrorKeyDown);
     errorModal.addEventListener('click', onErrorModalClick);
 
-    function onErrorKeyDown(evt) {
-      window.utilities.isEscEvent(evt, function (evt) {
+    function onErrorKeyDown(downEvt) {
+      window.utilities.isEscEvent(downEvt, function (evt) {
         evt.preventDefault();
         closeErrorModal();
-      })
+      });
     }
 
     function onErrorModalClick() {

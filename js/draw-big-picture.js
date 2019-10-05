@@ -108,8 +108,8 @@
         removeBigPictureListeners();
       }
 
-      function onBigPictureCancelKeyDown(evt) {
-        window.utilities.isEscEvent(evt, function(evt) {
+      function onBigPictureCancelKeyDown(downEvt) {
+        window.utilities.isEscEvent(downEvt, function (evt) {
           evt.preventDefault();
           hideBigPicture();
           removeBigPictureListeners();

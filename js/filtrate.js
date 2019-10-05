@@ -7,13 +7,13 @@
 
   function filtrate() {
 
-    var filters = document.querySelector('.img-filters');
-    var allFilterButtons = filters.querySelectorAll('.img-filters__button');
+    var filtersContainer = document.querySelector('.img-filters');
+    var allFilterButtons = filtersContainer.querySelectorAll('.img-filters__button');
     var picturesContainer = document.querySelector('.pictures');
 
     var defaultData = window.data;
 
-    filters.classList.remove('img-filters--inactive');
+    filtersContainer.classList.remove('img-filters--inactive');
 
     allFilterButtons.forEach(initFilterListeners);
 
@@ -66,7 +66,7 @@
     function removePreviousFilter() {
       var allPictures = picturesContainer.querySelectorAll('.picture');
 
-      document.querySelector('.img-filters__button--active').classList.remove('img-filters__button--active');
+      filtersContainer.querySelector('.img-filters__button--active').classList.remove('img-filters__button--active');
 
       allPictures.forEach(function (picture) {
         picturesContainer.removeChild(picture);

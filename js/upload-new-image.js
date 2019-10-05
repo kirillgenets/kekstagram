@@ -65,7 +65,8 @@
   var scaleButtonSmaller = imageEditor.querySelector('.scale__control--smaller');
   var scaleButtonBigger = imageEditor.querySelector('.scale__control--bigger');
   var scaleValue = imageEditor.querySelector('.scale__control--value');
-  var image = imageEditor.querySelector('.img-upload__preview img');
+  var imageContainer = imageEditor.querySelector('.img-upload__preview');
+  var image = imageContainer.querySelector('img');
   var cancelButton = imageEditor.querySelector('#upload-cancel');
   var effectsList = imageEditor.querySelector('.effects__list');
   var effectLevel = imageEditor.querySelector('.img-upload__effect-level');
@@ -142,11 +143,11 @@
 
   function changeImageScale(value) {
     scaleValue.value = value + '%';
-    image.style.transform = 'scale(' + value / MAX_SCALE_VALUE + ')';
+    imageContainer.style.transform = 'scale(' + value / MAX_SCALE_VALUE + ')';
   }
 
-  function onFormSubmit(evt) {
-    evt.preventDefault();
+  function onFormSubmit(submitEvt) {
+    submitEvt.preventDefault();
 
     var formData = new FormData(form);
 
@@ -313,8 +314,8 @@
     hideImageEditor();
   }
 
-  function onImageEditorCancelKeyDown(evt) {
-    window.utilities.isEscEvent(evt, function (evt) {
+  function onImageEditorCancelKeyDown(downEvt) {
+    window.utilities.isEscEvent(downEvt, function (evt) {
       evt.preventDefault();
 
       if (hashTagInput !== document.activeElement && descriptionInput !== document.activeElement) {
