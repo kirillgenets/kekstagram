@@ -36,15 +36,12 @@
 
       if (endIndexOfComment > comments.length) {
         endIndexOfComment = comments.length;
+        commentsLoader.classList.add('hidden');
       }
 
       comments.slice(startIndexOfComment, endIndexOfComment).forEach(createComment);
       commentsContainer.appendChild(commentsFragment);
       shownCommentsCount.textContent = endIndexOfComment + ' из ';
-
-      if (shownCommentsCount.textContent === commentsCount.textContent + ' из ') {
-        commentsLoader.classList.add('hidden');
-      }
 
       startIndexOfComment = endIndexOfComment;
 
