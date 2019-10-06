@@ -2,6 +2,9 @@
 
 (function () {
 
+  var main = document.body.querySelector('main');
+  var errorTemplate = document.querySelector('#error').content.querySelector('.error');
+
   window.backend.getData(onLoad, onError);
 
   function onLoad(data) {
@@ -11,8 +14,6 @@
   }
 
   function onError(errorMessage) {
-    var main = document.body.querySelector('main');
-    var errorTemplate = document.querySelector('#error').content.querySelector('.error');
     var errorModal = errorTemplate.cloneNode(true);
     var errorTitle = errorModal.querySelector('.error__title');
     var errorButtons = errorModal.querySelector('.error__buttons');

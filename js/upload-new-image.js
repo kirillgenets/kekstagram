@@ -57,6 +57,9 @@
     }
   };
 
+  var main = document.body.querySelector('main');
+  var errorTemplate = document.querySelector('#error').content.querySelector('.error');
+  var successTemplate = document.querySelector('#success').content.querySelector('.success');
   var form = document.querySelector('.img-upload__form');
   var uploadButton = form.querySelector('#upload-file');
   var hashTagInput = form.querySelector('.text__hashtags');
@@ -64,7 +67,7 @@
   var imageEditor = form.querySelector('.img-upload__overlay');
   var scaleButtonSmaller = imageEditor.querySelector('.scale__control--smaller');
   var scaleButtonBigger = imageEditor.querySelector('.scale__control--bigger');
-  var scaleValue = imageEditor.querySelector('.scale__control--value');
+  var scaleValueInput = imageEditor.querySelector('.scale__control--value');
   var imageContainer = imageEditor.querySelector('.img-upload__preview');
   var image = imageContainer.querySelector('img');
   var cancelButton = imageEditor.querySelector('#upload-cancel');
@@ -75,6 +78,7 @@
   var pin = effectLevelLine.querySelector('.effect-level__pin');
   var filterDepth = effectLevelLine.querySelector('.effect-level__depth');
 
+  var currentScale = MAX_SCALE_VALUE;
   var currentFilter = {};
 
   uploadButton.addEventListener('change', onUploadButtonChange);
@@ -124,25 +128,21 @@
   }
 
   function onScaleButtonSmallerClick() {
-    var scaleValueNumber = +scaleValue.value.slice(0, -1);
-    var newValue = scaleValueNumber - CHANGE_SCALE_VALUE_STEP;
-
-    if (scaleValueNumber > MIN_SCALE_VALUE) {
-      changeImageScale(newValue);
+    if (currentScale > MIN_SCALE_VALUE) {
+      currentScale -= CHANGE_SCALE_VALUE_STEP;
+      changeImageScale(currentScale);
     }
   }
 
   function onScaleButtonBiggerClick() {
-    var scaleValueNumber = +scaleValue.value.slice(0, -1);
-    var newValue = scaleValueNumber + CHANGE_SCALE_VALUE_STEP;
-
-    if (scaleValueNumber < MAX_SCALE_VALUE) {
-      changeImageScale(newValue);
+    if (currentScale < MAX_SCALE_VALUE) {
+      currentScale += CHANGE_SCALE_VALUE_STEP;
+      changeImageScale(currentScale);
     }
   }
 
   function changeImageScale(value) {
-    scaleValue.value = value + '%';
+    scaleValueInput.value = value + '%';
     imageContainer.style.transform = 'scale(' + value / MAX_SCALE_VALUE + ')';
   }
 
@@ -154,8 +154,6 @@
     window.backend.sendData(formData, onLoad, onError);
 
     function onLoad() {
-      var main = document.body.querySelector('main');
-      var successTemplate = document.querySelector('#success').content.querySelector('.success');
       var successModal = successTemplate.cloneNode(true);
 
       main.appendChild(successModal);
@@ -186,8 +184,6 @@
   }
 
   function onError(errorMessage) {
-    var main = document.body.querySelector('main');
-    var errorTemplate = document.querySelector('#error').content.querySelector('.error');
     var errorModal = errorTemplate.cloneNode(true);
     var errorTitle = errorModal.querySelector('.error__title');
     var tryAgainButton = errorModal.querySelector('.error__button:first-child');
@@ -282,13 +278,16 @@
     }
 
     function getSameHashTagsError() {
-      var hashTagsSet = new Set();
+      var hashTagsSet = [];
 
       hashTags.forEach(function (hashTag) {
-        hashTagsSet.add(hashTag.toLowerCase());
+        var lowerCaseHashTag = hashTag.toLowerCase();
+        if (!hashTagsSet.includes(lowerCaseHashTag)) {
+          hashTagsSet.push(lowerCaseHashTag);
+        }
       });
 
-      return hashTagsSet.size !== hashTags.length;
+      return hashTagsSet.length !== hashTags.length;
     }
   }
 
@@ -376,13 +375,20 @@
   function hideImageEditor() {
     imageEditor.classList.add('hidden');
     uploadButton.value = '';
-    clearFilter();
 
+    clearFilter();
+    clearForm();
+    removeImageEditorListeners();
+  }
+
+  function clearForm() {
     hashTagInput.setCustomValidity('');
     hashTagInput.value = '';
     hashTagInput.style.borderColor = '';
     descriptionInput.value = '';
+  }
 
+  function removeImageEditorListeners() {
     effectsList.removeEventListener('focus', onFilterFocus, true);
     pin.removeEventListener('mousedown', onPinMouseDown);
     cancelButton.removeEventListener('click', onImageEditorCancelButtonClick);

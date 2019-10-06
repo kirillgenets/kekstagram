@@ -4,6 +4,8 @@
 
   var MAX_LOADING_TIME = 10000;
   var SUCCESS_STATUS = 200;
+  var GET_URL = 'https://js.dump.academy/kekstagram/data';
+  var POST_URL = 'https://js.dump.academy/kekstagram';
 
   window.backend = {
     getData: getData,
@@ -11,8 +13,6 @@
   };
 
   function getData(onLoad, onError) {
-    var GET_URL = 'https://js.dump.academy/kekstagram/data';
-
     var dataRequest = new XMLHttpRequest();
     dataRequest.responseType = 'json';
 
@@ -43,8 +43,6 @@
   }
 
   function sendData(data, onLoad, onError) {
-    var POST_URL = 'https://js.dump.academy/kekstagram';
-
     var dataRequest = new XMLHttpRequest();
     dataRequest.responseType = 'json';
 

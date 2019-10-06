@@ -66,7 +66,9 @@
     function removePreviousFilter() {
       var allPictures = picturesContainer.querySelectorAll('.picture');
 
-      filtersContainer.querySelector('.img-filters__button--active').classList.remove('img-filters__button--active');
+      allFilterButtons.forEach(function (button) {
+        button.classList.remove('img-filters__button--active');
+      });
 
       allPictures.forEach(function (picture) {
         picturesContainer.removeChild(picture);
