@@ -8,10 +8,12 @@
   var allFilterButtons = filtersContainer.querySelectorAll('.img-filters__button');
   var picturesContainer = document.querySelector('.pictures');
 
+  var defaultData = [];
+
   window.filtrate = filtrate;
 
   function filtrate() {
-    var defaultData = window.data;
+    defaultData = window.data;
 
     filtersContainer.classList.remove('img-filters--inactive');
 
