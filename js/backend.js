@@ -1,15 +1,14 @@
 'use strict';
 
 (function () {
-
   var MAX_LOADING_TIME = 10000;
   var SUCCESS_STATUS = 200;
-  var GET_URL = 'https://js.dump.academy/kekstagram/data';
-  var POST_URL = 'https://js.dump.academy/kekstagram';
+  var GET_URL = 'https://javascript.pages.academy/kekstagram/data';
+  var POST_URL = 'https://javascript.pages.academy/kekstagram';
 
   window.backend = {
     getData: getData,
-    sendData: sendData
+    sendData: sendData,
   };
 
   function getData(onLoad, onError) {
@@ -63,7 +62,6 @@
       }
     }
 
-
     function onDataRequestError() {
       onError('Ошибка при отправке данных');
     }
@@ -72,5 +70,4 @@
       onError('Не удалось отправить данные за' + dataRequest.timeout + ' мс');
     }
   }
-
 })();
